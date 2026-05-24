@@ -1,38 +1,244 @@
-<!DOCTYPE html>
+<<!doctype html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tracking - BN Express</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap");
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+      }
+      .hidden-box {
+        display: none;
+      }
+      .animate-up {
+        animation: slideUp 0.5s ease-out;
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 min-h-screen pb-10">
+    <nav class="p-6 max-w-md mx-auto flex items-center gap-2">
+      <div class="bg-blue-600 p-2 rounded-xl shadow-lg shadow-blue-100">
+        <i class="fas fa-soap text-white text-xs"></i>
+      </div>
+      <span
+        class="font-extrabold text-blue-900 tracking-tight text-lg uppercase italic"
+        >BN EXPRESS</span
+      >
+    </nav>
 
-  <title>BN Express Laundry</title>
+    <main class="max-w-md mx-auto px-6 mt-4">
+      <h1 class="text-3xl font-extrabold text-slate-800 leading-tight mb-2">
+        Lacak Laundry<br /><span class="text-blue-600">Jadi Gampang.</span>
+      </h1>
+      <p class="text-slate-400 text-sm mb-8">
+        Masukkan kode order atau scan nota kamu.
+      </p>
 
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+      <div
+        class="bg-white p-2 rounded-[2rem] shadow-xl shadow-slate-200/50 border border-gray-100 flex items-center mb-6"
+      >
+        <button
+          onclick="startScan()"
+          class="bg-blue-50 text-blue-600 w-12 h-12 rounded-2xl flex items-center justify-center ml-1 transition hover:bg-blue-100"
+        >
+          <i class="fas fa-camera text-lg"></i>
+        </button>
+        <input
+          type="text"
+          id="inputCek"
+          placeholder="KODE ORDER..."
+          class="flex-1 px-4 outline-none font-bold text-slate-700 uppercase placeholder:text-slate-300"
+        />
+        <button
+          onclick="lacak()"
+          class="bg-blue-600 text-white w-12 h-12 rounded-2xl shadow-lg flex items-center justify-center mr-1 hover:bg-blue-700"
+        >
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
 
-<div class="container">
+      <div id="reader-container" class="hidden-box mb-6">
+        <div
+          id="reader"
+          class="rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white"
+        ></div>
+        <button
+          onclick="stopScan()"
+          class="w-full mt-3 text-red-500 font-bold text-xs uppercase tracking-widest italic"
+        >
+          BATALKAN SCAN
+        </button>
+      </div>
 
-  <h1>🧺 BN Express</h1>
+      <div id="hasil" class="hidden-box animate-up">
+        <div
+          class="bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 shadow-2xl"
+        >
+          <div class="bg-blue-600 p-6 text-center">
+            <p
+              class="text-[10px] text-blue-200 font-bold uppercase tracking-[0.3em] mb-1 text-white opacity-80"
+            >
+              Kondisi Paket
+            </p>
+            <h3
+              id="resStatus"
+              class="text-white font-black italic uppercase text-lg tracking-tight"
+            ></h3>
+          </div>
 
-  <p>
-    Smart Laundry Tracking Web App
-  </p>
+          <div class="p-8 space-y-5">
+            <div class="flex justify-between items-center text-sm">
+              <span
+                class="text-slate-400 font-medium tracking-tight uppercase text-[10px]"
+                >Pelanggan</span
+              >
+              <span id="resNama" class="font-bold text-slate-800"></span>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+              <span
+                class="text-slate-400 font-medium tracking-tight uppercase text-[10px]"
+                >Berat Cucian</span
+              >
+              <span id="resBerat" class="font-bold text-slate-800"></span>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+              <span
+                class="text-slate-400 font-medium tracking-tight uppercase text-[10px]"
+                >Tagihan</span
+              >
+              <span id="resHarga" class="font-black text-green-600"></span>
+            </div>
+            <div
+              class="flex justify-between items-center text-sm pb-2 border-b border-slate-50"
+            >
+              <span
+                class="text-slate-400 font-medium tracking-tight uppercase text-[10px]"
+                >Metode</span
+              >
+              <span id="resMetode" class="font-bold text-slate-800"></span>
+            </div>
 
-  <input 
-    type="text"
-    id="barcode"
-    placeholder="Masukkan Barcode Laundry"
-  >
+            <div id="areaGojek" class="pt-8 relative">
+              <p
+                class="text-[9px] font-black text-slate-300 uppercase mb-8 text-center tracking-[0.2em]"
+              >
+                Monitoring Delivery
+              </p>
+              <div class="w-full h-1.5 bg-slate-100 rounded-full relative">
+                <div
+                  id="motor"
+                  class="absolute -top-7 transition-all duration-[1.5s] ease-in-out"
+                  style="left: 0%"
+                >
+                  <div class="flex flex-col items-center">
+                    <span
+                      class="bg-blue-600 text-white text-[7px] px-2 py-0.5 rounded-full mb-1 font-bold shadow-lg"
+                      >KURIR</span
+                    >
+                    <i
+                      class="fas fa-motorcycle text-blue-600 text-xl drop-shadow-md"
+                    ></i>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="flex justify-between text-[9px] mt-4 font-black text-slate-300"
+              >
+                <span>OUTLET</span><span>RUMAH ANDA</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p
+          id="resWaktu"
+          class="text-center text-[9px] text-slate-300 mt-6 italic font-medium"
+        ></p>
+      </div>
+    </main>
 
-  <button onclick="cekLaundry()">
-    Cek Status
-  </button>
+    <script>
+      let qrScanner;
+      function startScan() {
+        document
+          .getElementById("reader-container")
+          .classList.remove("hidden-box");
+        qrScanner = new Html5Qrcode("reader");
+        qrScanner.start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: 250 },
+          (txt) => {
+            document.getElementById("inputCek").value = txt;
+            lacak();
+            stopScan();
+          },
+        );
+      }
+      function stopScan() {
+        if (qrScanner)
+          qrScanner
+            .stop()
+            .then(() =>
+              document
+                .getElementById("reader-container")
+                .classList.add("hidden-box"),
+            );
+      }
 
-  <div id="hasil"></div>
+      function lacak() {
+        const code = document
+          .getElementById("inputCek")
+          .value.toUpperCase()
+          .trim();
+        const dataRaw = localStorage.getItem(code);
+        if (!dataRaw) return alert("Maaf, Kode " + code + " tidak ditemukan!");
 
-</div>
+        const d = JSON.parse(dataRaw);
+        const hasilDiv = document.getElementById("hasil");
+        hasilDiv.classList.remove("hidden-box");
 
-<script src="script.js"></script>
+        document.getElementById("resNama").innerText = d.nama;
+        document.getElementById("resStatus").innerText = d.status;
+        document.getElementById("resMetode").innerText = d.metode;
+        document.getElementById("resBerat").innerText =
+          (d.berat || "0") + " Kg";
+        document.getElementById("resHarga").innerText =
+          "Rp " + (d.harga || "0");
+        document.getElementById("resWaktu").innerText =
+          "Update Terakhir: " + d.waktu;
 
-</body>
-</html
+        const motor = document.getElementById("motor");
+        if (d.metode === "Ambil Sendiri") {
+          document.getElementById("areaGojek").classList.add("hidden-box");
+        } else {
+          document.getElementById("areaGojek").classList.remove("hidden-box");
+          if (d.status.includes("Siap") || d.status.includes("Diantar")) {
+            motor.style.left = "60%";
+          } else if (d.status.includes("Selesai")) {
+            motor.style.left = "90%";
+          } else {
+            motor.style.left = "0%";
+          }
+        }
+        setTimeout(() => hasilDiv.scrollIntoView({ behavior: "smooth" }), 100);
+      }
+    </script>
+  </body>
+</html>
