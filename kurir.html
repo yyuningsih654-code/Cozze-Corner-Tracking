@@ -1,149 +1,109 @@
-[19.03, 24/5/2026] nins: <!DOCTYPE html>
+!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Smart Laundry Tracking</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        body…
-[19.04, 24/5/2026] nins: <!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kurir - Smart Laundry Tracking</title>
+    <title>Kurir Panel - Smart Laundry</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; color: white; }
-        .hidden-box { display: none; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .hidden-box { display: none !important; }
     </style>
 </head>
-<body class="p-6">
+<body class="min-h-screen pb-10">
 
-    <div class="max-w-md mx-auto">
-        <div class="flex items-center gap-4 mb-8">
-            <div class="bg-yellow-400 p-3 rounded-2xl shadow-lg shadow-yellow-500/20 text-slate-900">
-                <i class="fas fa-motorcycle text-xl"></i>
-            </div>
-            <div>
-                <h1 class="font-black text-xl tracking-tight uppercase">Kurir Panel</h1>
-                <p class="text-[10px] font-bold text-yellow-400 uppercase tracking-widest">Update Pengantaran</p>
-            </div>
+    <nav class="p-6 max-w-md mx-auto flex items-center gap-2">
+        <div class="bg-indigo-600 p-2 rounded-xl shadow-lg shadow-indigo-200">
+            <i class="fas fa-motorcycle text-white text-xs"></i>
         </div>
+        <div class="flex flex-col">
+            <span class="font-extrabold text-slate-800 tracking-tight">KURIR PANEL</span>
+            <span class="text-[8px] font-bold text-indigo-500 tracking-widest uppercase">Delivery Update</span>
+        </div>
+    </nav>
 
-        <div id="btn-scan-area" class="space-y-4">
-            <button onclick="mulaiScan()" class="w-full bg-white text-slate-900 p-6 rounded-[2rem] font-black flex items-center justify-center gap-3 shadow-xl active:scale-95 transition">
-                <i class="fas fa-qrcode text-2xl"></i>
-                SCAN NOTA PELANGGAN
+    <main class="max-w-md mx-auto px-6">
+        <div id="scan-init" class="space-y-4 mt-4">
+            <button onclick="startScan()" class="w-full bg-indigo-600 text-white p-8 rounded-[2.5rem] shadow-xl shadow-indigo-100 flex flex-col items-center gap-4 active:scale-95 transition">
+                <i class="fas fa-qrcode text-4xl"></i>
+                <span class="font-bold text-xs uppercase tracking-[0.2em]">Scan Nota Sekarang</span>
             </button>
-            <p class="text-center text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em]">Atau pilih dari galeri di dalam menu scan</p>
+            <p class="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest">Gunakan kamera untuk update cepat</p>
         </div>
 
-        <div id="scanner-container" class="hidden-box animate-up">
-            <div class="bg-slate-800 p-4 rounded-[2.5rem] border border-slate-700 shadow-2xl">
-                <div id="reader" class="rounded-[2rem] overflow-hidden"></div>
-                <div class="mt-4 flex flex-col gap-3">
-                    <label for="input-file" class="w-full bg-slate-700 text-white py-4 rounded-2xl font-bold text-center cursor-pointer text-xs uppercase border border-slate-600">
-                        <i class="fas fa-image mr-2"></i> Pilih dari Galeri
-                    </label>
-                    <input type="file" id="input-file" accept="image/*" class="hidden">
-                    <button onclick="stopScan()" class="text-red-400 text-[10px] font-bold uppercase py-2">Batal</button>
-                </div>
+        <div id="reader-container" class="hidden-box mt-4">
+            <div class="bg-white p-4 rounded-[2.5rem] shadow-2xl border border-gray-100">
+                <div id="reader" class="rounded-[2rem] overflow-hidden border"></div>
+                <button onclick="stopScan()" class="w-full mt-4 text-red-500 font-bold text-xs uppercase py-2">Batal Scan</button>
             </div>
         </div>
 
-        <div id="kontrol-status" class="hidden-box space-y-6">
-            <div class="bg-slate-800 p-8 rounded-[2.5rem] border border-slate-700 shadow-xl">
-                <div class="text-center mb-6">
-                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Update Order</span>
-                    <h2 id="id-terpilih" class="text-3xl font-black text-yellow-400 italic"></h2>
-                </div>
-                
+        <div id="update-status-area" class="hidden-box mt-4 space-y-4">
+            <div class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-white text-center">
+                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Update Untuk ID:</span>
+                <h2 id="id-display" class="text-3xl font-black text-indigo-600 italic my-2"></h2>
+                <p id="nama-display" class="text-sm font-bold text-slate-700 uppercase mb-6"></p>
+
                 <div class="grid grid-cols-1 gap-3">
-                    <button onclick="updateStatus('Sedang Diantar')" class="w-full bg-blue-600 p-5 rounded-2xl font-bold flex items-center justify-between px-8 hover:bg-blue-500">
-                        <span>SEDANG DIANTAR</span>
-                        <i class="fas fa-shipping-fast"></i>
+                    <button onclick="kirimUpdate('Sedang Diantar')" class="w-full bg-slate-800 text-white py-5 rounded-2xl font-bold text-[10px] uppercase tracking-widest shadow-lg flex items-center justify-center gap-3">
+                        <i class="fas fa-shipping-fast"></i> Mulai Antar
                     </button>
-                    
-                    <button onclick="updateStatus('Selesai / Sampai')" class="w-full bg-green-600 p-5 rounded-2xl font-bold flex items-center justify-between px-8 hover:bg-green-500">
-                        <span>SUDAH SAMPAI</span>
-                        <i class="fas fa-check-circle"></i>
+                    <button onclick="kirimUpdate('Selesai / Sampai')" class="w-full bg-green-500 text-white py-5 rounded-2xl font-bold text-[10px] uppercase tracking-widest shadow-lg flex items-center justify-center gap-3">
+                        <i class="fas fa-check-double"></i> Sudah Sampai
                     </button>
                 </div>
             </div>
-            <button onclick="location.reload()" class="w-full text-slate-500 font-bold text-[10px] uppercase tracking-widest">Kembali</button>
+            <button onclick="location.reload()" class="w-full text-indigo-600 font-bold text-[10px] uppercase tracking-widest py-4 italic underline">Selesai / Scan Lagi</button>
         </div>
-    </div>
+    </main>
 
     <script>
-        // 1. KONEKSI FIREBASE
         const firebaseConfig = { databaseURL: "https://smart-laundry-default-rtdb.firebaseio.com" };
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-
-        let scanner;
+        let html5QrCode;
         let idAktif = "";
 
-        function mulaiScan() {
-            document.getElementById('btn-scan-area').classList.add('hidden-box');
-            document.getElementById('scanner-container').classList.remove('hidden-box');
-            
-            scanner = new Html5Qrcode("reader");
-            
-            // Scan Kamera
-            scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (txt) => {
-                prosesID(txt);
+        function startScan() {
+            document.getElementById('scan-init').classList.add('hidden-box');
+            document.getElementById('reader-container').classList.remove('hidden-box');
+            html5QrCode = new Html5Qrcode("reader");
+            html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (txt) => {
+                prosesData(txt);
                 stopScan();
-            }).catch(err => console.log(err));
-
-            // Scan Galeri
-            const fileInput = document.getElementById('input-file');
-            fileInput.onchange = e => {
-                if (e.target.files.length == 0) return;
-                scanner.scanFile(e.target.files[0], true)
-                    .then(txt => { prosesID(txt); stopScan(); })
-                    .catch(err => alert("QR Tidak Terbaca!"));
-            };
-        }
-
-        function prosesID(id) {
-            idAktif = id.toUpperCase().trim();
-            document.getElementById('kontrol-status').classList.remove('hidden-box');
-            document.getElementById('id-terpilih').innerText = idAktif;
+            });
         }
 
         function stopScan() {
-            if(scanner) {
-                scanner.stop().then(() => {
-                    document.getElementById('scanner-container').classList.add('hidden-box');
+            if(html5QrCode) {
+                html5QrCode.stop().then(() => {
+                    document.getElementById('reader-container').classList.add('hidden-box');
                 });
             }
         }
 
-        // 2. FUNGSI UPDATE STATUS KE CLOUD
-        function updateStatus(baru) {
-            if(!idAktif) return;
+        function prosesData(id) {
+            idAktif = id.toUpperCase().trim();
+            db.ref('orders/' + idAktif).once('value').then(s => {
+                const d = s.val();
+                if(!d) return alert("Data ID " + idAktif + " Gak ada!");
 
-            db.ref('orders/' + idAktif).update({
-                status: baru,
-                waktu_update: new Date().toLocaleString('id-ID')
-            }).then(() => {
-                alert("Status " + idAktif + " Berhasil Diperbarui!");
-                location.reload();
-            }).catch(err => alert("Gagal update: " + err.message));
+                document.getElementById('update-status-area').classList.remove('hidden-box');
+                document.getElementById('id-display').innerText = idAktif;
+                document.getElementById('nama-display').innerText = d.nama;
+            });
+        }
+
+        function kirimUpdate(statusBaru) {
+            if(!idAktif) return;
+            db.ref('orders/' + idAktif).update({ status: statusBaru }).then(() => {
+                alert("Status Berhasil Diperbarui!");
+            }).catch(e => alert("Gagal update cloud!"));
         }
     </script>
 </body>
