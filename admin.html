@@ -1,98 +1,132 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Smart Laundry</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - BN Express</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
-        .hidden-box { display: none !important; }
-    </style>
-</head>
-<body class="min-h-screen pb-10">
-    <nav class="p-6 max-w-md mx-auto flex items-center gap-2">
-        <div class="bg-indigo-600 p-2 rounded-xl shadow-lg"><i class="fas fa-user-shield text-white text-xs"></i></div>
-        <div class="font-extrabold text-slate-800 uppercase tracking-tight">Admin Panel</div>
-    </nav>
-    <main class="max-w-md mx-auto px-6">
-        <div class="flex gap-4 mb-6">
-            <button onclick="pindahTab('input')" id="btn-input" class="flex-1 py-3 rounded-2xl font-bold text-[10px] uppercase bg-indigo-600 text-white shadow-lg">Input Baru</button>
-            <button onclick="pindahTab('update')" id="btn-update" class="flex-1 py-3 rounded-2xl font-bold text-[10px] uppercase bg-white text-slate-400 border border-slate-100">Update Status</button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  </head>
+  <body class="bg-slate-100 p-5">
+    <div
+      class="max-w-md mx-auto bg-white p-8 rounded-3xl shadow-lg border border-gray-200"
+    >
+      <h1
+        class="text-xl font-extrabold mb-6 text-indigo-700 text-center uppercase tracking-tight italic"
+      >
+        BN Express Admin
+      </h1>
+
+      <div class="space-y-4">
+        <div class="grid grid-cols-2 gap-3">
+          <input
+            type="text"
+            id="barcode"
+            placeholder="ID (BN001)"
+            class="p-3 border rounded-xl font-bold uppercase outline-none focus:border-indigo-500"
+          />
+          <input
+            type="text"
+            id="nama"
+            placeholder="Nama"
+            class="p-3 border rounded-xl outline-none focus:border-indigo-500"
+          />
         </div>
-        <div id="panel-input" class="space-y-4">
-            <div class="bg-white p-6 rounded-[2.5rem] shadow-xl border border-white space-y-4">
-                <input type="text" id="idOrder" placeholder="ID ORDER (BN001)" class="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold uppercase">
-                <input type="text" id="namaPel" placeholder="Nama Pelanggan" class="w-full p-4 bg-slate-50 rounded-2xl outline-none font-semibold">
-                <div class="grid grid-cols-2 gap-4">
-                    <input type="number" id="berat" placeholder="Kg" class="w-full p-4 bg-slate-50 rounded-2xl outline-none font-semibold">
-                    <input type="number" id="harga" placeholder="Harga" class="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold text-indigo-600">
-                </div>
-                <button onclick="simpanData()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold shadow-lg uppercase text-[10px]">Simpan & Buat QR</button>
-            </div>
-            <div id="qr-area" class="hidden-box bg-white p-6 rounded-[2.5rem] shadow-xl text-center border-4 border-indigo-600">
-                <div id="canvas-qr" class="flex justify-center mb-4"></div>
-                <p id="teks-id" class="text-xl font-black text-indigo-600 italic"></p>
-            </div>
+
+        <input
+          type="text"
+          id="telp"
+          placeholder="WhatsApp (628...)"
+          class="w-full p-3 border rounded-xl outline-none focus:border-indigo-500"
+        />
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="relative">
+            <input
+              type="number"
+              id="berat"
+              placeholder="Berat"
+              class="w-full p-3 border rounded-xl outline-none focus:border-indigo-500"
+            />
+            <span class="absolute right-3 top-3 text-gray-400 text-sm">Kg</span>
+          </div>
+          <input
+            type="text"
+            id="harga"
+            placeholder="Harga (Rp)"
+            class="w-full p-3 border rounded-xl outline-none focus:border-indigo-500"
+          />
         </div>
-        <div id="panel-update" class="hidden-box space-y-4">
-            <div class="bg-white p-6 rounded-[2.5rem] shadow-xl border border-white">
-                <div class="flex gap-2 mb-4">
-                    <input type="text" id="cariId" placeholder="Cari ID..." class="flex-1 p-4 bg-slate-50 rounded-2xl outline-none font-bold uppercase">
-                    <button onclick="cariData()" class="bg-indigo-600 text-white px-6 rounded-2xl shadow-lg"><i class="fas fa-search"></i></button>
-                </div>
-                <div id="hasil-cari" class="hidden-box border-t pt-4 space-y-3">
-                    <p id="namaTampil" class="text-center font-bold text-slate-700 uppercase"></p>
-                    <div class="grid grid-cols-1 gap-2">
-                        <button onclick="updateStatus('Sedang Dicuci')" class="w-full bg-blue-500 text-white py-3 rounded-xl font-bold text-[10px] uppercase">Mulai Cuci</button>
-                        <button onclick="updateStatus('Selesai')" class="w-full bg-green-500 text-white py-3 rounded-xl font-bold text-[10px] uppercase">Selesai</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+
+        <label class="block text-[10px] font-bold text-gray-400 ml-1 uppercase"
+          >Status Laundry</label
+        >
+        <select
+          id="status"
+          class="w-full p-3 border rounded-xl bg-blue-50 font-bold text-blue-700 outline-none"
+        >
+          <option value="Sedang Diproses 🧺">Sedang Diproses</option>
+          <option value="Siap Diambil/Diantar 🏁">Siap (Sudah Jadi)</option>
+        </select>
+
+        <label class="block text-[10px] font-bold text-gray-400 ml-1 uppercase"
+          >Metode Pengambilan</label
+        >
+        <select
+          id="metode"
+          class="w-full p-3 border rounded-xl bg-gray-50 outline-none"
+        >
+          <option value="Ambil Sendiri">Ambil Sendiri</option>
+          <option value="Antar Kurir">Antar Kurir</option>
+        </select>
+
+        <button
+          onclick="simpanData()"
+          class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black shadow-lg hover:bg-indigo-700 active:scale-95 transition"
+        >
+          SIMPAN & BUAT QR
+        </button>
+      </div>
+
+      <div
+        class="mt-8 flex flex-col items-center justify-center bg-gray-50 p-6 rounded-2xl border-2 border-dashed border-gray-200"
+      >
+        <div id="qrcode"></div>
+        <p
+          id="info-teks"
+          class="text-[10px] text-gray-400 mt-4 italic font-bold uppercase"
+        >
+          QR Code Nota
+        </p>
+      </div>
+    </div>
+
     <script>
-        const conf = { databaseURL: "https://smart-laundry-default-rtdb.firebaseio.com" }; // PASTIKAN URL INI BENAR
-        firebase.initializeApp(conf);
-        const db = firebase.database();
-        function pindahTab(t) {
-            document.getElementById('panel-input').classList.toggle('hidden-box', t !== 'input');
-            document.getElementById('panel-update').classList.toggle('hidden-box', t !== 'update');
-        }
-        function simpanData() {
-            const id = document.getElementById('idOrder').value.toUpperCase().trim();
-            const d = {
-                nama: document.getElementById('namaPel').value,
-                berat: document.getElementById('berat').value,
-                harga: document.getElementById('harga').value,
-                status: "Diterima"
-            };
-            if(!id) return alert("ID Kosong!");
-            db.ref('orders/' + id).set(d).then(() => {
-                alert("Data Masuk Cloud!");
-                document.getElementById('qr-area').classList.remove('hidden-box');
-                document.getElementById('canvas-qr').innerHTML = "";
-                new QRCode(document.getElementById("canvas-qr"), { text: id, width: 120, height: 120 });
-                document.getElementById('teks-id').innerText = id;
-            });
-        }
-        function cariData() {
-            const id = document.getElementById('cariId').value.toUpperCase().trim();
-            db.ref('orders/' + id).once('value').then(s => {
-                if(!s.val()) return alert("Gak ada!");
-                document.getElementById('hasil-cari').classList.remove('hidden-box');
-                document.getElementById('namaTampil').innerText = s.val().nama + " (" + s.val().status + ")";
-            });
-        }
-        function updateStatus(st) {
-            const id = document.getElementById('cariId').value.toUpperCase().trim();
-            db.ref('orders/' + id).update({status: st}).then(() => alert("Status Berhasil Diubah!"));
-        }
+      function simpanData() {
+        const id = document
+          .getElementById("barcode")
+          .value.toUpperCase()
+          .trim();
+        const data = {
+          nama: document.getElementById("nama").value,
+          telp: document.getElementById("telp").value,
+          berat: document.getElementById("berat").value,
+          harga: document.getElementById("harga").value,
+          status: document.getElementById("status").value,
+          metode: document.getElementById("metode").value,
+          waktu: new Date().toLocaleString("id-ID"),
+        };
+
+        if (!id || !data.nama) return alert("ID dan Nama wajib diisi!");
+
+        localStorage.setItem(id, JSON.stringify(data));
+        const areaQR = document.getElementById("qrcode");
+        areaQR.innerHTML = "";
+        new QRCode(areaQR, { text: id, width: 150, height: 150 });
+        document.getElementById("info-teks").innerText = "KODE: " + id;
+        alert("Data " + id + " Berhasil Disimpan!");
+      }
     </script>
-</body>
+  </body>
 </html>
+>
