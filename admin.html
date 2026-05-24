@@ -101,31 +101,38 @@
       </div>
     </div>
 
-    <script>
-      function simpanData() {
-        const id = document
-          .getElementById("barcode")
-          .value.toUpperCase()
-          .trim();
+   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script>
+    // Konfigurasi Database (Gunakan Database Demo)
+    const firebaseConfig = { databaseURL: "https://smart-laundry-default-rtdb.firebaseio.com" };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function simpanData() {
+        const id = document.getElementById('barcode').value.toUpperCase().trim();
         const data = {
-          nama: document.getElementById("nama").value,
-          telp: document.getElementById("telp").value,
-          berat: document.getElementById("berat").value,
-          harga: document.getElementById("harga").value,
-          status: document.getElementById("status").value,
-          metode: document.getElementById("metode").value,
-          waktu: new Date().toLocaleString("id-ID"),
+            nama: document.getElementById('nama').value,
+            telp: document.getElementById('telp').value,
+            berat: document.getElementById('berat').value,
+            harga: document.getElementById('harga').value,
+            status: document.getElementById('status').value,
+            metode: document.getElementById('metode').value,
+            waktu: new Date().toLocaleString('id-ID')
         };
 
-        if (!id || !data.nama) return alert("ID dan Nama wajib diisi!");
+        if(!id || !data.nama) return alert("ID dan Nama wajib diisi!");
 
-        localStorage.setItem(id, JSON.stringify(data));
-        const areaQR = document.getElementById("qrcode");
-        areaQR.innerHTML = "";
-        new QRCode(areaQR, { text: id, width: 150, height: 150 });
-        document.getElementById("info-teks").innerText = "KODE: " + id;
-        alert("Data " + id + " Berhasil Disimpan!");
-      }
-    </script>
+        // SIMPAN KE DATABASE ONLINE (Firebase)
+        db.ref('orders/' + id).set(data).then(() => {
+            const areaQR = document.getElementById("qrcode");
+            areaQR.innerHTML = ""; 
+            new QRCode(areaQR, { text: id, width: 150, height: 150 });
+            document.getElementById('info-teks').innerText = "KODE: " + id;
+            alert("Data " + id + " Tersimpan di Cloud!");
+        });
+    }
+</script>
   </body>
 </html>
