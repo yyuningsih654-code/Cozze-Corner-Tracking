@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - BN Express</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  </head>
+  <body class="bg-slate-100 p-5">
+    <div
+      class="max-w-md mx-auto bg-white p-8 rounded-3xl shadow-lg border border-gray-200"
+    >
+      <h1
+        class="text-xl font-extrabold mb-6 text-indigo-700 text-center uppercase tracking-tight italic"
+      >
+        BN Express Admin
+      </h1>
+
+      <div class="space-y-4">
+        <div class="grid grid-cols-2 gap-3">
+          <input
+            type="text"
+            id="barcode"
+            placeholder="ID (BN001)"
+            class="p-3 border rounded-xl font-bold uppercase outline-none focus:border-indigo-500"
+          />
+          <input
+            type="text"
+            id="nama"
+            placeholder="Nama"
+            class="p-3 border rounded-xl outline-none focus:border-indigo-500"
+          />
+        </div>
+
+        <input
+          type="text"
+          id="telp"
+          placeholder="WhatsApp (628...)"
+          class="w-full p-3 border rounded-xl outline-none focus:border-indigo-500"
+        />
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="relative">
+            <input
+              type="number"
+              id="berat"
+              placeholder="Berat"
+              class="w-full p-3 border rounded-xl outline-none focus:border-indigo-500"
+            />
+            <span class="absolute right-3 top-3 text-gray-400 text-sm">Kg</span>
+          </div>
+          <input
+            type="text"
+            id="harga"
+            placeholder="Harga (Rp)"
+            class="w-full p-3 border rounded-xl outline-none focus:border-indigo-500"
+          />
+        </div>
+
+        <label class="block text-[10px] font-bold text-gray-400 ml-1 uppercase"
+          >Status Laundry</label
+        >
+        <select
+          id="status"
+          class="w-full p-3 border rounded-xl bg-blue-50 font-bold text-blue-700 outline-none"
+        >
+          <option value="Sedang Diproses 🧺">Sedang Diproses</option>
+          <option value="Siap Diambil/Diantar 🏁">Siap (Sudah Jadi)</option>
+        </select>
+
+        <label class="block text-[10px] font-bold text-gray-400 ml-1 uppercase"
+          >Metode Pengambilan</label
+        >
+        <select
+          id="metode"
+          class="w-full p-3 border rounded-xl bg-gray-50 outline-none"
+        >
+          <option value="Ambil Sendiri">Ambil Sendiri</option>
+          <option value="Antar Kurir">Antar Kurir</option>
+        </select>
+
+        <button
+          onclick="simpanData()"
+          class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black shadow-lg hover:bg-indigo-700 active:scale-95 transition"
+        >
+          SIMPAN & BUAT QR
+        </button>
+      </div>
+
+      <div
+        class="mt-8 flex flex-col items-center justify-center bg-gray-50 p-6 rounded-2xl border-2 border-dashed border-gray-200"
+      >
+        <div id="qrcode"></div>
+        <p
+          id="info-teks"
+          class="text-[10px] text-gray-400 mt-4 italic font-bold uppercase"
+        >
+          QR Code Nota
+        </p>
+      </div>
+    </div>
+
+    <script>
+      function simpanData() {
+        const id = document
+          .getElementById("barcode")
+          .value.toUpperCase()
+          .trim();
+        const data = {
+          nama: document.getElementById("nama").value,
+          telp: document.getElementById("telp").value,
+          berat: document.getElementById("berat").value,
+          harga: document.getElementById("harga").value,
+          status: document.getElementById("status").value,
+          metode: document.getElementById("metode").value,
+          waktu: new Date().toLocaleString("id-ID"),
+        };
+
+        if (!id || !data.nama) return alert("ID dan Nama wajib diisi!");
+
+        localStorage.setItem(id, JSON.stringify(data));
+        const areaQR = document.getElementById("qrcode");
+        areaQR.innerHTML = "";
+        new QRCode(areaQR, { text: id, width: 150, height: 150 });
+        document.getElementById("info-teks").innerText = "KODE: " + id;
+        alert("Data " + id + " Berhasil Disimpan!");
+      }
+    </script>
+  </body>
+</html>
