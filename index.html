@@ -1,322 +1,185 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Laundry Tracking</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap");
-      body {
-        font-family: "Plus Jakarta Sans", sans-serif;
-        background-color: #f8fafc;
-      }
-      .hidden-box {
-        display: none;
-      }
-      .glass {
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(10px);
-      }
-      .animate-float {
-        animation: float 3s ease-in-out infinite;
-      }
-      @keyframes float {
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-10px);
-        }
-      }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .hidden-box { display: none; }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
     </style>
-  </head>
-  <body class="min-h-screen pb-20">
+</head>
+<body class="min-h-screen pb-20">
+
     <nav class="p-6 max-w-md mx-auto flex justify-between items-center">
-      <div class="flex items-center gap-2">
-        <div class="bg-indigo-600 p-2 rounded-xl shadow-lg shadow-indigo-200">
-          <i class="fas fa-microchip text-white text-xs"></i>
+        <div class="flex items-center gap-2">
+            <div class="bg-indigo-600 p-2 rounded-xl shadow-lg shadow-indigo-200">
+                <i class="fas fa-microchip text-white text-xs"></i>
+            </div>
+            <div class="flex flex-col">
+                <span class="font-extrabold text-slate-800 leading-none">SMART LAUNDRY</span>
+                <span class="text-[8px] font-bold text-indigo-500 tracking-[0.2em]">TRACKING SYSTEM</span>
+            </div>
         </div>
-        <div class="flex flex-col">
-          <span
-            class="font-extrabold text-slate-800 leading-none tracking-tight"
-            >SMART LAUNDRY</span
-          >
-          <span
-            class="text-[8px] font-bold text-indigo-500 tracking-[0.2em] uppercase"
-            >Tracking System</span
-          >
-        </div>
-      </div>
-      <button
-        class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-slate-400"
-      >
-        <i class="fas fa-bell"></i>
-      </button>
     </nav>
 
     <main class="max-w-md mx-auto px-6">
-      <div class="mt-4 mb-8">
-        <h1 class="text-3xl font-extrabold text-slate-800 leading-tight">
-          Halo, Pelanggan! <br /><span class="text-indigo-600 italic"
-            >Cek Cucianmu.</span
-          >
-        </h1>
-      </div>
+        <div class="mt-4 mb-8 text-center">
+            <h1 class="text-3xl font-extrabold text-slate-800">Cek Cucianmu.</h1>
+        </div>
 
-      <div
-        class="glass p-2 rounded-[2rem] shadow-xl shadow-indigo-100 border border-white flex items-center mb-8"
-      >
-        <button
-          onclick="startScan()"
-          class="bg-indigo-50 text-indigo-600 w-12 h-12 rounded-2xl flex items-center justify-center ml-1 transition active:scale-90"
-        >
-          <i class="fas fa-camera"></i>
-        </button>
-        <input
-          type="text"
-          id="inputCek"
-          placeholder="Masukkan Kode Order..."
-          class="flex-1 px-4 bg-transparent outline-none font-bold text-slate-700 uppercase placeholder:text-slate-300 text-sm"
-        />
-        <button
-          onclick="lacak()"
-          class="bg-indigo-600 text-white w-12 h-12 rounded-2xl shadow-lg flex items-center justify-center mr-1 hover:bg-indigo-700 active:scale-90"
-        >
-          <i class="fas fa-search"></i>
-        </button>
-      </div>
-
-      <div id="reader-container" class="hidden-box mb-8 animate-up">
-        <div
-          class="bg-white p-4 rounded-[2.5rem] shadow-2xl border border-gray-100"
-        >
-          <div id="reader" class="rounded-[2rem] overflow-hidden"></div>
-          <div class="mt-4 flex flex-col gap-3">
-            <label
-              for="input-file"
-              class="w-full bg-indigo-50 text-indigo-600 py-4 rounded-2xl font-bold text-center cursor-pointer text-xs uppercase tracking-wider"
-            >
-              <i class="fas fa-image mr-2"></i> Ambil dari Galeri
-            </label>
-            <input
-              type="file"
-              id="input-file"
-              accept="image/*"
-              class="hidden"
-            />
-            <button
-              onclick="stopScan()"
-              class="text-red-400 text-[10px] font-bold uppercase tracking-widest py-2"
-            >
-              Tutup Kamera
+        <div class="glass p-2 rounded-[2rem] shadow-xl border border-white flex items-center mb-8">
+            <button onclick="startScan()" class="bg-indigo-50 text-indigo-600 w-12 h-12 rounded-2xl flex items-center justify-center ml-1">
+                <i class="fas fa-camera"></i>
             </button>
-          </div>
+            <input type="text" id="inputCek" placeholder="Masukkan Kode..." class="flex-1 px-4 bg-transparent outline-none font-bold uppercase text-sm">
+            <button onclick="lacak()" class="bg-indigo-600 text-white w-12 h-12 rounded-2xl shadow-lg flex items-center justify-center mr-1">
+                <i class="fas fa-search"></i>
+            </button>
         </div>
-      </div>
 
-      <div id="main-menu" class="grid grid-cols-2 gap-4">
-        <div
-          onclick="document.getElementById('inputCek').focus()"
-          class="bg-indigo-600 p-6 rounded-[2.5rem] text-white shadow-xl shadow-indigo-200 cursor-pointer"
-        >
-          <i class="fas fa-search-location text-2xl mb-4 opacity-80"></i>
-          <p class="font-bold text-sm uppercase tracking-wider leading-tight">
-            Lacak<br />Pesanan
-          </p>
-        </div>
-        <div
-          onclick="
-            alert(
-              'Layanan Kami:\n- Reguler: 7rb/kg\n- Express: 12rb/kg\n- Cuci Karpet: 15rb/m',
-            )
-          "
-          class="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm cursor-pointer"
-        >
-          <i class="fas fa-tags text-orange-400 text-2xl mb-4"></i>
-          <p
-            class="font-bold text-sm text-slate-600 uppercase tracking-wider leading-tight"
-          >
-            Daftar<br />Harga
-          </p>
-        </div>
-        <div
-          class="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm"
-        >
-          <i class="fas fa-map-marked-alt text-green-400 text-2xl mb-4"></i>
-          <p
-            class="font-bold text-sm text-slate-600 uppercase tracking-wider leading-tight"
-          >
-            Lokasi<br />Outlet
-          </p>
-        </div>
-        <a
-          href="https://wa.me/628123456789"
-          class="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm"
-        >
-          <i class="fas fa-headset text-red-400 text-2xl mb-4"></i>
-          <p
-            class="font-bold text-sm text-slate-600 uppercase tracking-wider leading-tight"
-          >
-            Bantuan<br />Admin
-          </p>
-        </a>
-      </div>
-
-      <div id="hasil" class="hidden-box mt-4 animate-up">
-        <div
-          class="bg-white rounded-[2.5rem] border border-gray-100 shadow-2xl overflow-hidden"
-        >
-          <div class="bg-indigo-600 p-8 text-center text-white">
-            <span
-              class="text-[9px] font-bold uppercase tracking-[0.3em] opacity-60"
-              >Status Pesanan</span
-            >
-            <h2
-              id="resStatus"
-              class="text-xl font-black italic uppercase mt-1"
-            ></h2>
-          </div>
-          <div class="p-8 space-y-4">
-            <div class="flex justify-between border-b pb-3 border-slate-50">
-              <span class="text-[10px] text-slate-400 font-bold uppercase"
-                >Nama</span
-              >
-              <span
-                id="resNama"
-                class="font-bold text-slate-800 uppercase text-sm"
-              ></span>
-            </div>
-            <div class="flex justify-between border-b pb-3 border-slate-50">
-              <span class="text-[10px] text-slate-400 font-bold uppercase"
-                >Berat</span
-              >
-              <span
-                id="resBerat"
-                class="font-bold text-slate-800 text-sm"
-              ></span>
-            </div>
-            <div class="flex justify-between border-b pb-3 border-slate-50">
-              <span class="text-[10px] text-slate-400 font-bold uppercase"
-                >Tagihan</span
-              >
-              <span
-                id="resHarga"
-                class="font-black text-green-600 text-sm"
-              ></span>
-            </div>
-
-            <div id="areaMotor" class="pt-6 relative hidden-box">
-              <div class="w-full h-1 bg-slate-100 rounded-full relative">
-                <div
-                  id="motor"
-                  class="absolute -top-6 transition-all duration-[2s]"
-                  style="left: 0%"
-                >
-                  <div class="flex flex-col items-center">
-                    <i
-                      class="fas fa-motorcycle text-indigo-600 text-xl animate-float"
-                    ></i>
-                  </div>
+        <div id="reader-container" class="hidden-box mb-8">
+            <div class="bg-white p-4 rounded-[2.5rem] shadow-2xl">
+                <div id="reader" class="rounded-[2rem] overflow-hidden"></div>
+                <div class="mt-4 flex flex-col gap-3">
+                    <label for="input-file" class="w-full bg-indigo-50 text-indigo-600 py-4 rounded-2xl font-bold text-center cursor-pointer text-xs uppercase">
+                        <i class="fas fa-image mr-2"></i> Pilih Foto dari Galeri
+                    </label>
+                    <input type="file" id="input-file" accept="image/*" class="hidden">
+                    <button onclick="stopScan()" class="text-red-400 text-[10px] font-bold uppercase">Tutup</button>
                 </div>
-              </div>
-              <div
-                class="flex justify-between text-[8px] font-bold text-slate-300 mt-4 uppercase"
-              >
-                <span>Outlet</span><span>Rumah Anda</span>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
+
+        <div id="main-menu" class="grid grid-cols-2 gap-4">
+            <div onclick="document.getElementById('inputCek').focus()" class="bg-indigo-600 p-6 rounded-[2.5rem] text-white shadow-xl shadow-indigo-200">
+                <i class="fas fa-search-location text-2xl mb-4 opacity-80"></i>
+                <p class="font-bold text-sm uppercase leading-tight">Lacak<br>Pesanan</p>
+            </div>
+            <div onclick="alert('Layanan: \n1. Cuci Setrika: 7rb/kg \n2. Express: 12rb/kg')" class="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm">
+                <i class="fas fa-tags text-orange-400 text-2xl mb-4"></i>
+                <p class="font-bold text-sm text-slate-600 uppercase leading-tight">Daftar<br>Harga</p>
+            </div>
+        </div>
+
+        <div id="hasil" class="hidden-box mt-4">
+            <div class="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden">
+                <div class="bg-indigo-600 p-8 text-center text-white">
+                    <span class="text-[9px] font-bold uppercase tracking-[0.3em] opacity-60">Status Sekarang</span>
+                    <h2 id="resStatus" class="text-xl font-black italic uppercase mt-1 text-yellow-300"></h2>
+                </div>
+                <div class="p-8 space-y-4 text-sm">
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="text-slate-400 uppercase text-[10px] font-bold">Pelanggan</span>
+                        <span id="resNama" class="font-bold text-slate-800 uppercase"></span>
+                    </div>
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="text-slate-400 uppercase text-[10px] font-bold">Berat & Harga</span>
+                        <span class="font-bold text-slate-800"><span id="resBerat"></span> Kg - <span id="resHarga" class="text-green-600"></span></span>
+                    </div>
+                    
+                    <div id="areaMotor" class="pt-6 relative hidden-box">
+                        <div class="w-full h-1 bg-slate-100 rounded-full relative">
+                            <div id="motor" class="absolute -top-6 transition-all duration-[2s]" style="left: 0%;">
+                                <i class="fas fa-motorcycle text-indigo-600 text-xl animate-float"></i>
+                            </div>
+                        </div>
+                        <div class="flex justify-between text-[8px] font-bold text-slate-300 mt-4 uppercase">
+                            <span>Outlet</span><span>Rumah Anda</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button onclick="location.reload()" class="w-full mt-6 text-indigo-600 font-bold text-xs uppercase">Kembali</button>
+        </div>
     </main>
 
     <script>
-      let qrScanner;
+        // 1. HUBUNGKAN KE DATABASE (FIREBASE)
+        const firebaseConfig = { databaseURL: "https://smart-laundry-default-rtdb.firebaseio.com" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-      function startScan() {
-        document
-          .getElementById("reader-container")
-          .classList.remove("hidden-box");
-        document.getElementById("main-menu").classList.add("hidden");
+        let qrScanner;
 
-        qrScanner = new Html5Qrcode("reader");
+        // 2. FUNGSI LACAK (AMBIL DARI DATABASE ONLINE)
+        function lacak() {
+            const code = document.getElementById('inputCek').value.toUpperCase().trim();
+            if(!code) return alert("Masukkan kode dulu!");
 
-        // Kamera
-        qrScanner
-          .start(
-            { facingMode: "environment" },
-            { fps: 10, qrbox: 250 },
-            (txt) => {
-              document.getElementById("inputCek").value = txt;
-              lacak();
-              stopScan();
-            },
-          )
-          .catch((err) => console.log(err));
+            db.ref('orders/' + code).once('value').then((snapshot) => {
+                const d = snapshot.val();
+                if(!d) return alert("Maaf, Kode " + code + " tidak terdaftar!");
 
-        // Galeri
-        const fileInput = document.getElementById("input-file");
-        fileInput.onchange = (e) => {
-          if (e.target.files.length == 0) return;
-          qrScanner
-            .scanFile(e.target.files[0], true)
-            .then((txt) => {
-              document.getElementById("inputCek").value = txt;
-              lacak();
-              stopScan();
-            })
-            .catch((err) => alert("QR tidak terbaca!"));
-        };
-      }
+                // Tampilkan Kotak Hasil
+                document.getElementById('hasil').classList.remove('hidden-box');
+                document.getElementById('main-menu').classList.add('hidden');
+                
+                // Isi Data
+                document.getElementById('resNama').innerText = d.nama;
+                document.getElementById('resStatus').innerText = d.status;
+                document.getElementById('resBerat').innerText = d.berat;
+                document.getElementById('resHarga').innerText = "Rp " + d.harga;
 
-      function stopScan() {
-        if (qrScanner) {
-          qrScanner.stop().then(() => {
-            document
-              .getElementById("reader-container")
-              .classList.add("hidden-box");
-            document.getElementById("main-menu").classList.remove("hidden");
-          });
+                // Logika Animasi Motor
+                const motorArea = document.getElementById('areaMotor');
+                const motor = document.getElementById('motor');
+                
+                if(d.metode === "Antar Kurir") {
+                    motorArea.classList.remove('hidden-box');
+                    if(d.status.includes("Diantar")) motor.style.left = "50%";
+                    else if(d.status.includes("Selesai") || d.status.includes("Sampai")) motor.style.left = "90%";
+                    else motor.style.left = "0%";
+                } else {
+                    motorArea.classList.add('hidden-box');
+                }
+            });
         }
-      }
 
-      function lacak() {
-        const code = document
-          .getElementById("inputCek")
-          .value.toUpperCase()
-          .trim();
-        const dataRaw = localStorage.getItem(code);
-        if (!dataRaw) return alert("Kode " + code + " Tidak Ditemukan!");
+        // 3. FUNGSI SCAN (KAMERA & GALERI)
+        function startScan() {
+            document.getElementById('reader-container').classList.remove('hidden-box');
+            document.getElementById('main-menu').classList.add('hidden');
+            
+            qrScanner = new Html5Qrcode("reader");
+            
+            // Kamera Aktif
+            qrScanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (txt) => {
+                document.getElementById('inputCek').value = txt;
+                lacak(); stopScan();
+            }).catch(err => console.log(err));
 
-        const d = JSON.parse(dataRaw);
-        document.getElementById("hasil").classList.remove("hidden-box");
-        document.getElementById("main-menu").classList.add("hidden");
-
-        document.getElementById("resNama").innerText = d.nama;
-        document.getElementById("resStatus").innerText = d.status;
-        document.getElementById("resBerat").innerText = d.berat + " Kg";
-        document.getElementById("resHarga").innerText = "Rp " + d.harga;
-
-        const motorArea = document.getElementById("areaMotor");
-        const motor = document.getElementById("motor");
-
-        if (d.metode === "Antar Kurir") {
-          motorArea.classList.remove("hidden-box");
-          if (d.status.includes("Diantar")) motor.style.left = "50%";
-          else if (d.status.includes("Selesai") || d.status.includes("Sampai"))
-            motor.style.left = "90%";
-          else motor.style.left = "0%";
-        } else {
-          motorArea.classList.add("hidden-box");
+            // Galeri Aktif
+            const fileInput = document.getElementById('input-file');
+            fileInput.onchange = e => {
+                if (e.target.files.length == 0) return;
+                qrScanner.scanFile(e.target.files[0], true)
+                    .then(txt => {
+                        document.getElementById('inputCek').value = txt;
+                        lacak(); stopScan();
+                    })
+                    .catch(err => alert("QR tidak terbaca! Pastikan foto jelas."));
+            };
         }
-      }
+
+        function stopScan() {
+            if(qrScanner) {
+                qrScanner.stop().then(() => {
+                    document.getElementById('reader-container').classList.add('hidden-box');
+                    document.getElementById('main-menu').classList.remove('hidden');
+                });
+            }
+        }
     </script>
-  </body>
+</body>
 </html>
