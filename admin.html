@@ -12,78 +12,56 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
-        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
-        .hidden-box { display: none; }
+        .hidden-box { display: none !important; }
     </style>
 </head>
 <body class="min-h-screen pb-10">
-
     <nav class="p-6 max-w-md mx-auto flex justify-between items-center">
         <div class="flex items-center gap-2">
-            <div class="bg-indigo-600 p-2 rounded-xl shadow-lg">
-                <i class="fas fa-user-shield text-white text-xs"></i>
-            </div>
-            <div class="flex flex-col">
-                <span class="font-extrabold text-slate-800 leading-none tracking-tight">ADMIN PANEL</span>
-                <span class="text-[8px] font-bold text-indigo-500 tracking-[0.2em] uppercase">Input & Update</span>
-            </div>
+            <div class="bg-indigo-600 p-2 rounded-xl shadow-lg"><i class="fas fa-user-shield text-white text-xs"></i></div>
+            <div class="flex flex-col"><span class="font-extrabold text-slate-800">ADMIN PANEL</span></div>
         </div>
     </nav>
 
     <main class="max-w-md mx-auto px-6">
-        <div class="flex gap-4 mb-8">
-            <button onclick="showTab('input')" id="tab-input" class="flex-1 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider bg-indigo-600 text-white shadow-lg shadow-indigo-100">Input Baru</button>
-            <button onclick="showTab('update')" id="tab-update" class="flex-1 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider bg-white text-slate-400 border border-slate-100">Update Status</button>
+        <div class="flex gap-4 mb-6">
+            <button onclick="showTab('input')" id="tab-input" class="flex-1 py-3 rounded-2xl font-bold text-[10px] uppercase bg-indigo-600 text-white shadow-lg">Input Baru</button>
+            <button onclick="showTab('update')" id="tab-update" class="flex-1 py-3 rounded-2xl font-bold text-[10px] uppercase bg-white text-slate-400 border border-slate-100">Update Status</button>
         </div>
 
         <div id="section-input" class="space-y-4">
-            <div class="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-indigo-100 border border-white space-y-4">
-                <input type="text" id="barcode" placeholder="ID ORDER (BN001)" class="w-full p-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-400 font-bold uppercase text-sm">
-                <input type="text" id="nama" placeholder="Nama Pelanggan" class="w-full p-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-400 font-semibold text-sm">
-                <input type="number" id="wa" placeholder="Nomor WA (628...)" class="w-full p-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-400 font-semibold text-sm">
-                
-                <select id="layanan" class="w-full p-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-400 font-semibold text-sm text-slate-500">
+            <div class="bg-white p-6 rounded-[2.5rem] shadow-xl border border-white space-y-4">
+                <input type="text" id="barcode" placeholder="ID ORDER (BN001)" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-400 font-bold uppercase">
+                <input type="text" id="nama" placeholder="Nama Pelanggan" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-400 font-semibold">
+                <select id="layanan" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-400 font-semibold text-slate-500">
                     <option value="Cuci Setrika">Cuci Setrika</option>
                     <option value="Setrika Saja">Setrika Saja</option>
                     <option value="Cuci Kering">Cuci Kering</option>
                 </select>
-
                 <div class="grid grid-cols-2 gap-4">
-                    <input type="number" id="berat" placeholder="Berat (Kg)" class="w-full p-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-400 font-semibold text-sm">
-                    <input type="number" id="harga" placeholder="Total Harga" class="w-full p-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-400 font-bold text-indigo-600 text-sm">
+                    <input type="number" id="berat" placeholder="Kg" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-400 font-semibold">
+                    <input type="number" id="harga" placeholder="Harga" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-400 font-bold text-indigo-600">
                 </div>
-
-                <button onclick="simpanData()" class="w-full bg-indigo-600 text-white py-5 rounded-[1.5rem] font-bold shadow-lg shadow-indigo-200 active:scale-95 transition uppercase text-xs tracking-widest">Simpan & Buat QR</button>
+                <button onclick="simpanData()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold shadow-lg uppercase text-xs">Simpan & Buat QR</button>
             </div>
-
-            <div id="hasil-qr" class="hidden-box bg-white p-8 rounded-[2.5rem] shadow-xl text-center border-4 border-indigo-600">
+            <div id="hasil-qr" class="hidden-box bg-white p-6 rounded-[2.5rem] shadow-xl text-center border-4 border-indigo-600">
                 <div id="qrcode" class="flex justify-center mb-4"></div>
                 <h3 id="info-id" class="text-2xl font-black text-indigo-600 italic"></h3>
-                <p class="text-[10px] font-bold text-slate-400 uppercase mt-2">Berhasil Tersimpan di Cloud</p>
             </div>
         </div>
 
         <div id="section-update" class="hidden-box space-y-4">
-            <div class="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-indigo-100 border border-white">
+            <div class="bg-white p-6 rounded-[2.5rem] shadow-xl border border-white">
                 <div class="flex gap-2 mb-6">
-                    <input type="text" id="cariId" placeholder="Masukkan Kode..." class="flex-1 p-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-400 font-bold uppercase text-sm">
-                    <button onclick="cariOrder()" class="bg-indigo-600 text-white px-6 rounded-2xl font-bold shadow-lg shadow-indigo-100">
-                        <i class="fas fa-search"></i>
-                    </button>
+                    <input type="text" id="cariId" placeholder="Kode Order..." class="flex-1 p-4 bg-slate-50 rounded-2xl outline-none font-bold uppercase">
+                    <button onclick="cariOrder()" class="bg-indigo-600 text-white px-6 rounded-2xl shadow-lg"><i class="fas fa-search"></i></button>
                 </div>
-
-                <div id="detail-order" class="hidden-box space-y-4 border-t pt-6">
-                    <div class="text-center mb-4">
-                        <span id="statusSkrg" class="bg-indigo-50 text-indigo-600 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest"></span>
-                    </div>
-                    
-                    <p class="text-center font-bold text-slate-700 uppercase tracking-tight" id="namaTampil"></p>
-
+                <div id="detail-order" class="hidden-box space-y-4 border-t pt-4">
+                    <p class="text-center font-bold text-slate-700 uppercase" id="namaTampil"></p>
                     <div class="grid grid-cols-1 gap-2">
-                        <button onclick="updateStatus('Sedang Dicuci')" class="w-full bg-blue-500 text-white py-4 rounded-2xl font-bold text-[10px] uppercase tracking-widest">Mulai Cuci</button>
-                        <button onclick="updateStatus('Sedang Dijemur')" class="w-full bg-orange-400 text-white py-4 rounded-2xl font-bold text-[10px] uppercase tracking-widest">Mulai Jemur</button>
-                        <button onclick="updateStatus('Sudah Selesai')" class="w-full bg-green-500 text-white py-4 rounded-2xl font-bold text-[10px] uppercase tracking-widest">Selesai / Bisa Diambil</button>
-                        <button onclick="updateStatus('Sedang Diantar')" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold text-[10px] uppercase tracking-widest">Kirim ke Kurir</button>
+                        <button onclick="updateStatus('Sedang Dicuci')" class="w-full bg-blue-500 text-white py-3 rounded-xl font-bold text-[10px] uppercase">Mulai Cuci</button>
+                        <button onclick="updateStatus('Sudah Selesai')" class="w-full bg-green-500 text-white py-3 rounded-xl font-bold text-[10px] uppercase">Selesai</button>
+                        <button onclick="updateStatus('Sedang Diantar')" class="w-full bg-slate-800 text-white py-3 rounded-xl font-bold text-[10px] uppercase">Kirim Kurir</button>
                     </div>
                 </div>
             </div>
@@ -95,69 +73,43 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Navigasi Tab
         function showTab(type) {
-            const btnInput = document.getElementById('tab-input');
-            const btnUpdate = document.getElementById('tab-update');
-            const secInput = document.getElementById('section-input');
-            const secUpdate = document.getElementById('section-update');
-
-            if(type === 'input') {
-                secInput.classList.remove('hidden-box'); secUpdate.classList.add('hidden-box');
-                btnInput.className = "flex-1 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider bg-indigo-600 text-white shadow-lg shadow-indigo-100";
-                btnUpdate.className = "flex-1 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider bg-white text-slate-400 border border-slate-100";
-            } else {
-                secInput.classList.add('hidden-box'); secUpdate.classList.remove('hidden-box');
-                btnUpdate.className = "flex-1 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider bg-indigo-600 text-white shadow-lg shadow-indigo-100";
-                btnInput.className = "flex-1 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider bg-white text-slate-400 border border-slate-100";
-            }
+            document.getElementById('section-input').classList.toggle('hidden-box', type !== 'input');
+            document.getElementById('section-update').classList.toggle('hidden-box', type !== 'update');
         }
 
-        // SIMPAN DATA BARU
         function simpanData() {
             const id = document.getElementById('barcode').value.toUpperCase().trim();
             const data = {
                 nama: document.getElementById('nama').value,
-                wa: document.getElementById('wa').value,
                 layanan: document.getElementById('layanan').value,
                 berat: document.getElementById('berat').value,
                 harga: document.getElementById('harga').value,
-                status: "Diterima Kasir",
-                waktu: new Date().toLocaleString('id-ID')
+                status: "Diterima Kasir"
             };
-
             if(!id || !data.nama) return alert("Isi ID dan Nama!");
-
             db.ref('orders/' + id).set(data).then(() => {
                 document.getElementById('hasil-qr').classList.remove('hidden-box');
                 document.getElementById('qrcode').innerHTML = "";
-                new QRCode(document.getElementById("qrcode"), { text: id, width: 150, height: 150 });
+                new QRCode(document.getElementById("qrcode"), { text: id, width: 120, height: 120 });
                 document.getElementById('info-id').innerText = id;
                 alert("Data Online!");
             });
         }
 
-        // UPDATE STATUS
         let idKetemu = "";
         function cariOrder() {
-            const code = document.getElementById('cariId').value.toUpperCase().trim();
-            db.ref('orders/' + code).once('value').then((snapshot) => {
-                const d = snapshot.val();
-                if(!d) return alert("Order tidak ditemukan!");
-                
-                idKetemu = code;
+            idKetemu = document.getElementById('cariId').value.toUpperCase().trim();
+            db.ref('orders/' + idKetemu).once('value').then(s => {
+                const d = s.val();
+                if(!d) return alert("Gak ada!");
                 document.getElementById('detail-order').classList.remove('hidden-box');
-                document.getElementById('namaTampil').innerText = d.nama;
-                document.getElementById('statusSkrg').innerText = d.status;
+                document.getElementById('namaTampil').innerText = d.nama + " (" + d.status + ")";
             });
         }
 
-        function updateStatus(baru) {
-            if(!idKetemu) return;
-            db.ref('orders/' + idKetemu).update({ status: baru }).then(() => {
-                alert("Status Berhasil Diubah!");
-                document.getElementById('statusSkrg').innerText = baru;
-            });
+        function updateStatus(b) {
+            db.ref('orders/' + idKetemu).update({status: b}).then(() => alert("Status Terupdate!"));
         }
     </script>
 </body>
