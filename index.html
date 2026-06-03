@@ -10,6 +10,8 @@
       rel="stylesheet"
     />
     <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap");
       body {
@@ -238,6 +240,14 @@
     </main>
 
     <script>
+      // KONFIGURASI FIREBASE (Link database otomatis terpasang dengan rapi)
+      const conf = {
+          databaseURL: "https://smart-laundry-tracking-89f97-default-rtdb.firebaseio.com/"
+      };
+      
+      firebase.initializeApp(conf);
+      const db = firebase.database();
+
       let qrScanner;
 
       function startScan() {
@@ -292,32 +302,40 @@
           .getElementById("inputCek")
           .value.toUpperCase()
           .trim();
-        const dataRaw = localStorage.getItem(code);
-        if (!dataRaw) return alert("Kode " + code + " Tidak Ditemukan!");
+        
+        if (!code) return alert("Masukkan kode order terlebih dahulu!");
 
-        const d = JSON.parse(dataRaw);
-        document.getElementById("hasil").classList.remove("hidden-box");
-        document.getElementById("main-menu").classList.add("hidden");
+        // Bagian ini sekarang langsung membaca data asli dari Cloud Firebase secara real-time!
+        db.ref('orders/' + code).once('value').then((snapshot) => {
+          if (!snapshot.exists()) {
+            return alert("Kode " + code + " Tidak Ditemukan di Cloud!");
+          }
 
-        document.getElementById("resNama").innerText = d.nama;
-        document.getElementById("resStatus").innerText = d.status;
-        document.getElementById("resBerat").innerText = d.berat + " Kg";
-        document.getElementById("resHarga").innerText = "Rp " + d.harga;
+          const d = snapshot.val();
+          document.getElementById("hasil").classList.remove("hidden-box");
+          document.getElementById("main-menu").classList.add("hidden");
 
-        const motorArea = document.getElementById("areaMotor");
-        const motor = document.getElementById("motor");
+          document.getElementById("resNama").innerText = d.nama;
+          document.getElementById("resStatus").innerText = d.status;
+          document.getElementById("resBerat").innerText = d.berat + " Kg";
+          document.getElementById("resHarga").innerText = "Rp " + d.harga;
 
-        if (d.metode === "Antar Kurir") {
-          motorArea.classList.remove("hidden-box");
-          if (d.status.includes("Diantar")) motor.style.left = "50%";
-          else if (d.status.includes("Selesai") || d.status.includes("Sampai"))
-            motor.style.left = "90%";
-          else motor.style.left = "0%";
-        } else {
-          motorArea.classList.add("hidden-box");
-        }
+          const motorArea = document.getElementById("areaMotor");
+          const motor = document.getElementById("motor");
+
+          if (d.metode === "Antar Kurir") {
+            motorArea.classList.remove("hidden-box");
+            if (d.status.includes("Diantar")) motor.style.left = "50%";
+            else if (d.status.includes("Selesai") || d.status.includes("Sampai") || d.status.includes("Siap"))
+              motor.style.left = "90%";
+            else motor.style.left = "0%";
+          } else {
+            motorArea.classList.add("hidden-box");
+          }
+        }).catch((error) => {
+          alert("Gagal memuat data: " + error.message);
+        });
       }
     </script>
   </body>
 </html>
-
