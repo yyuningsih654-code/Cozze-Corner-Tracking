@@ -10,6 +10,8 @@
       rel="stylesheet"
     />
     <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   </head>
   <body class="bg-yellow-50 p-4">
     <div
@@ -67,6 +69,14 @@
     </div>
 
     <script>
+      // KONFIGURASI FIREBASE (Otomatis nyambung ke satelit database kamu)
+      const conf = {
+          databaseURL: "https://smart-laundry-tracking-89f97-default-rtdb.firebaseio.com/"
+      };
+      
+      firebase.initializeApp(conf);
+      const db = firebase.database();
+
       let scanner;
       let idAktif = "";
 
@@ -84,17 +94,23 @@
               scanner
                 .start(cameraId, { fps: 10, qrbox: 250 }, (decodedText) => {
                   idAktif = decodedText.toUpperCase().trim();
-                  const rawData = localStorage.getItem(idAktif);
-                  if (!rawData) {
-                    alert("ID " + idAktif + " Tidak Terdaftar!");
-                    location.reload();
-                    return;
-                  }
-                  const data = JSON.parse(rawData);
-                  document.getElementById("info").classList.remove("hidden");
-                  document.getElementById("knama").innerText = data.nama;
-                  scanner.stop();
-                  document.getElementById("reader").style.display = "none";
+                  
+                  // Sekarang nyari data orderannya langsung ke Cloud Firebase
+                  db.ref('orders/' + idAktif).once('value').then((snapshot) => {
+                    if (!snapshot.exists()) {
+                      alert("ID " + idAktif + " Tidak Terdaftar di Cloud!");
+                      location.reload();
+                      return;
+                    }
+                    const data = snapshot.val();
+                    document.getElementById("info").classList.remove("hidden");
+                    document.getElementById("knama").innerText = data.nama;
+                    scanner.stop();
+                    document.getElementById("reader").style.display = "none";
+                  }).catch((err) => {
+                    alert("Gagal memuat data cloud: " + err.message);
+                  });
+
                 })
                 .catch((err) => {
                   alert("Error Scanner: " + err);
@@ -112,14 +128,23 @@
 
       function update(statusBaru) {
         if (!idAktif) return;
-        let data = JSON.parse(localStorage.getItem(idAktif));
-        data.status = statusBaru;
-        data.waktu = new Date().toLocaleString("id-ID");
-        localStorage.setItem(idAktif, JSON.stringify(data));
-        alert("Status Update Berhasil!");
-        location.reload();
+        
+        // Ambil data lama dulu dari Firebase, ganti statusnya, lalu simpan kembali ke Firebase
+        db.ref('orders/' + idAktif).once('value').then((snapshot) => {
+          if (snapshot.exists()) {
+            let data = snapshot.val();
+            data.status = statusBaru;
+            data.waktu = new Date().toLocaleString("id-ID");
+            
+            return db.ref('orders/' + idAktif).set(data);
+          }
+        }).then(() => {
+          alert("Status Update Berhasil ke Cloud!");
+          location.reload();
+        }).catch((error) => {
+          alert("Gagal update status: " + error.message);
+        });
       }
     </script>
   </body>
 </html>
-
