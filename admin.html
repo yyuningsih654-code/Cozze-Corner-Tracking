@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -17,7 +17,7 @@
 
         <div class="space-y-4">
             <div class="grid grid-cols-2 gap-3">
-                <input type="text" id="barcode" placeholder="ID (BN001)" class="p-3 border rounded-xl font-bold uppercase outline-none focus:border-indigo-500">
+                <input type="text" id="barcode" oninput="cariDataOtomatis()" placeholder="ID (BN001)" class="p-3 border rounded-xl font-bold uppercase outline-none focus:border-indigo-500">
                 <input type="text" id="nama" placeholder="Nama" class="p-3 border rounded-xl outline-none focus:border-indigo-500">
             </div>
 
@@ -57,12 +57,34 @@
     </div>
 
     <script>
-
-    const conf = {
+      const conf = {
           databaseURL: "https://smart-laundry-tracking-89f97-default-rtdb.firebaseio.com/"
       };
+      
       firebase.initializeApp(conf);
       const db = firebase.database();
+
+      // !!! FUNGSI BARU: AUTO FILL DATA !!!
+      function cariDataOtomatis() {
+        const id = document.getElementById("barcode").value.toUpperCase().trim();
+        if (id.length < 3) return; // Cari kalau minimal sudah ngetik 3 huruf
+
+        db.ref('orders/' + id).once('value').then((snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            // Isi otomatis kotak inputnya biar admin gak capek ngetik ulang
+            document.getElementById("nama").value = data.nama || "";
+            document.getElementById("telp").value = data.telp || "";
+            document.getElementById("berat").value = data.berat || "";
+            document.getElementById("harga").value = data.harga || "";
+            document.getElementById("status").value = data.status || "Sedang Diproses 🧺";
+            document.getElementById("metode").value = data.metode || "Ambil Sendiri";
+            
+            // Tampilin teks kalau data ini ketemu di database
+            document.getElementById("info-teks").innerText = "Data ditemukan! Siap update status.";
+          }
+        });
+      }
 
       function simpanData() {
         const id = document.getElementById("barcode").value.toUpperCase().trim();
@@ -78,13 +100,12 @@
 
         if (!id || !data.nama) return alert("ID dan Nama wajib diisi!");
 
-        // Bagian ini sekarang langsung ngirim data ke Cloud Firebase agar HP lain bisa baca!
         db.ref('orders/' + id).set(data).then(() => {
             const areaQR = document.getElementById("qrcode");
             areaQR.innerHTML = "";
             new QRCode(areaQR, { text: id, width: 150, height: 150 });
             document.getElementById("info-teks").innerText = "KODE: " + id;
-            alert("Data " + id + " Berhasil Disimpan ke Cloud!");
+            alert("Data " + id + " Berhasil Diperbarui di Cloud!");
         }).catch((error) => {
             alert("Gagal simpan: " + error.message);
         });
