@@ -95,7 +95,7 @@
         </button>
       </div>
 
-      <div id="reader-container" class="hidden-box mb-8 animate-up">
+      <div id="reader-container" class="hidden-box mb-8">
         <div
           class="bg-white p-4 rounded-[2.5rem] shadow-2xl border border-gray-100"
         >
@@ -123,142 +123,377 @@
         </div>
       </div>
 
-      <div id="main-menu" class="grid grid-cols-2 gap-4">
-        <div
-          onclick="document.getElementById('inputCek').focus()"
-          class="bg-indigo-600 p-6 rounded-[2.5rem] text-white shadow-xl shadow-indigo-200 cursor-pointer"
+      <div id="main-menu" class="grid grid-cols-2 gap-4 mb-8">
+        <a
+          onclick="bukaModalLacak()"
+          class="bg-blue-600 p-6 rounded-[2.5rem] text-white cursor-pointer block shadow-lg"
         >
-          <i class="fas fa-search-location text-2xl mb-4 opacity-80"></i>
-          <p class="font-bold text-sm uppercase tracking-wider leading-tight">
+          <i class="fas fa-search text-2xl mb-4 block text-blue-100"></i>
+          <p class="font-bold text-sm uppercase tracking-wider">
             Lacak<br />Pesanan
           </p>
-        </div>
-        <div
-          onclick="
-            alert(
-              'Layanan Kami:\n- Reguler: 7rb/kg\n- Express: 12rb/kg\n- Cuci Karpet: 15rb/m',
-            )
-          "
-          class="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm cursor-pointer"
-        >
-          <i class="fas fa-tags text-orange-400 text-2xl mb-4"></i>
-          <p
-            class="font-bold text-sm text-slate-600 uppercase tracking-wider leading-tight"
-          >
-            Daftar<br />Harga
-          </p>
-        </div>
-        <div
-          class="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm"
-        >
-          <i class="fas fa-map-marked-alt text-green-400 text-2xl mb-4"></i>
-          <p
-            class="font-bold text-sm text-slate-600 uppercase tracking-wider leading-tight"
-          >
-            Lokasi<br />Outlet
-          </p>
-        </div>
+        </a>
+
         <a
-          href="https://wa.me/628123456789"
-          class="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm"
+          onclick="bukaModalMenu()"
+          class="bg-amber-500 p-6 rounded-[2.5rem] text-white cursor-pointer block shadow-lg"
         >
-          <i class="fas fa-headset text-red-400 text-2xl mb-4"></i>
-          <p
-            class="font-bold text-sm text-slate-600 uppercase tracking-wider leading-tight"
-          >
-            Bantuan<br />Admin
+          <i
+            class="fas fa-clipboard-list text-2xl mb-4 block text-amber-100"
+          ></i>
+          <p class="font-bold text-sm text-white uppercase tracking-wider">
+            Daftar<br />Menu
+          </p>
+        </a>
+
+        <a
+          onclick="bukaModalAbsen()"
+          class="bg-emerald-500 p-6 rounded-[2.5rem] text-white cursor-pointer block shadow-lg"
+        >
+          <i class="fas fa-user-check text-2xl mb-4 block text-emerald-100"></i>
+          <p class="font-bold text-sm text-white uppercase tracking-wider">
+            Buku Tamu<br />& Absen
+          </p>
+        </a>
+
+        <a
+          onclick="bukaKopi()"
+          class="bg-indigo-600 p-6 rounded-[2.5rem] text-white cursor-pointer block shadow-lg"
+        >
+          <i class="fas fa-coffee text-2xl mb-4 block text-indigo-100"></i>
+          <p class="font-bold text-sm text-white uppercase tracking-wider">
+            Pesan<br />Kopi & Teh
           </p>
         </a>
       </div>
 
-      <div id="hasil" class="hidden-box mt-4 animate-up">
-        <div
-          class="bg-white rounded-[2.5rem] border border-gray-100 shadow-2xl overflow-hidden"
-        >
-          <div class="bg-indigo-600 p-8 text-center text-white">
-            <span
-              class="text-[9px] font-bold uppercase tracking-[0.3em] opacity-60"
-              >Status Pesanan</span
-            >
-            <h2
-              id="resStatus"
-              class="text-xl font-black italic uppercase mt-1"
-            ></h2>
+      <div
+        id="hasil"
+        class="hidden-box bg-white p-6 rounded-[2.5rem] shadow-2xl border border-gray-100 mb-8"
+      >
+        <h2 id="resNama" class="text-xl font-bold text-slate-800 mb-1"></h2>
+        <h2
+          id="resStatus"
+          class="text-xl font-black italic uppercase text-indigo-600 mt-1"
+        ></h2>
+        <div class="mt-4 space-y-2 text-sm text-slate-600">
+          <div class="flex justify-between border-b pb-2">
+            <span class="font-semibold">Berat:</span><span id="resBerat"></span>
           </div>
-          <div class="p-8 space-y-4">
-            <div class="flex justify-between border-b pb-3 border-slate-50">
-              <span class="text-[10px] text-slate-400 font-bold uppercase"
-                >Nama</span
-              >
-              <span
-                id="resNama"
-                class="font-bold text-slate-800 uppercase text-sm"
-              ></span>
-            </div>
-            <div class="flex justify-between border-b pb-3 border-slate-50">
-              <span class="text-[10px] text-slate-400 font-bold uppercase"
-                >Berat</span
-              >
-              <span
-                id="resBerat"
-                class="font-bold text-slate-800 text-sm"
-              ></span>
-            </div>
-            <div class="flex justify-between border-b pb-3 border-slate-50">
-              <span class="text-[10px] text-slate-400 font-bold uppercase"
-                >Tagihan</span
-              >
-              <span
-                id="resHarga"
-                class="font-black text-green-600 text-sm"
-              ></span>
-            </div>
-
-            <div id="areaMotor" class="pt-6 relative hidden-box">
-              <div class="w-full h-1 bg-slate-100 rounded-full relative">
-                <div
-                  id="motor"
-                  class="absolute -top-6 transition-all duration-[2s]"
-                  style="left: 0%"
-                >
-                  <div class="flex flex-col items-center">
-                    <i
-                      class="fas fa-motorcycle text-indigo-600 text-xl animate-float"
-                    ></i>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="flex justify-between text-[8px] font-bold text-slate-300 mt-4 uppercase"
-              >
-                <span>Outlet</span><span>Rumah Anda</span>
-              </div>
-            </div>
+          <div class="flex justify-between border-b pb-2">
+            <span class="font-semibold">Total Harga:</span
+            ><span id="resHarga" class="font-bold text-green-600"></span>
           </div>
         </div>
+
+        <div id="areaMotor" class="pt-6 relative hidden-box">
+          <div class="w-full h-1 bg-slate-100 rounded-full relative">
+            <div
+              id="motor"
+              class="absolute -top-6 transition-all duration-[2s]"
+              style="left: 0%"
+            >
+              <div class="flex flex-col items-center">
+                <i
+                  class="fas fa-motorcycle text-indigo-600 text-xl animate-float"
+                ></i>
+              </div>
+            </div>
+          </div>
+          <div
+            class="flex justify-between text-[8px] font-bold text-slate-300 mt-4 uppercase"
+          >
+            <span>Outlet</span><span>Rumah Anda</span>
+          </div>
+        </div>
+        <button
+          onclick="
+            document.getElementById('hasil').classList.add('hidden-box');
+            document.getElementById('main-menu').classList.remove('hidden');
+          "
+          class="w-full mt-4 bg-slate-100 text-slate-600 font-semibold p-3 rounded-xl text-xs uppercase tracking-wider"
+        >
+          Kembali
+        </button>
       </div>
     </main>
 
+    <div
+      id="modalAbsen"
+      style="display: none"
+      class="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4"
+    >
+      <div
+        class="bg-white p-6 rounded-[2.5rem] w-full max-w-md shadow-2xl text-left font-sans"
+      >
+        <h3 class="text-xl font-bold text-slate-800 mb-2">
+          👋🏼 Isi Buku Tamu Stand
+        </h3>
+        <p class="text-xs text-slate-400 mb-3">
+          Halo! Terima kasih sudah mampir ke BN Laundry & Cozee Coffee
+        </p>
+        <hr class="border-gray-100 mb-4" />
+
+        <label
+          class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1"
+          >Nama Pengunjung:</label
+        >
+        <input
+          type="text"
+          id="namaTamu"
+          placeholder="Nama kamu / Nama Dosen"
+          class="w-full p-3 border border-gray-200 rounded-xl mb-3 text-slate-700"
+        />
+
+        <label
+          class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1"
+          >Asal Kelas / Instansi:</label
+        >
+        <input
+          type="text"
+          id="asalTamu"
+          placeholder="Contoh: Ilkom 2024 / Juri 1"
+          class="w-full p-3 border border-gray-200 rounded-xl mb-3 text-slate-700"
+        />
+
+        <label
+          class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1"
+          >Pesan & Kesan:</label
+        >
+        <textarea
+          id="kesanTamu"
+          placeholder="Stand-nya kreatif banget! Sukses ya!"
+          class="w-full p-3 border border-gray-200 rounded-xl mb-4 text-slate-700 h-20"
+        ></textarea>
+
+        <button
+          onclick="kirimAbsenKeFirebase()"
+          class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold p-4 rounded-xl shadow-lg mb-2"
+        >
+          KIRIM ABSENSI
+        </button>
+        <button
+          onclick="tutupModalAbsen()"
+          class="w-full bg-gray-100 text-slate-600 font-semibold p-3 rounded-xl"
+        >
+          Batal
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="modalMenu"
+      style="display: none"
+      class="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4"
+    >
+      <div
+        class="bg-white p-6 rounded-[2.5rem] w-full max-w-md shadow-2xl text-left font-sans overflow-y-auto max-h-[85vh]"
+      >
+        <h3 class="text-xl font-bold text-slate-800 mb-2">
+          📋 Daftar Layanan & Menu
+        </h3>
+        <hr class="border-gray-100 mb-4" />
+
+        <h4
+          class="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-2"
+        >
+          🧺 BN LAUNDRY SERVICES
+        </h4>
+        <div class="space-y-2 mb-4">
+          <div class="flex justify-between p-2 bg-slate-50 rounded-xl">
+            <span class="text-sm text-slate-700"
+              >Cuci Kering Setrika (Per Kg)</span
+            ><span class="font-bold text-sm text-slate-800">Rp7.000</span>
+          </div>
+          <div class="flex justify-between p-2 bg-slate-50 rounded-xl">
+            <span class="text-sm text-slate-700">Cuci Express (6 Jam)</span
+            ><span class="font-bold text-sm text-slate-800">Rp12.000</span>
+          </div>
+        </div>
+
+        <h4
+          class="text-xs font-bold text-amber-600 uppercase tracking-widest mb-2"
+        >
+          ☕ COZEE COFFEE MENU
+        </h4>
+        <div class="space-y-2 mb-4">
+          <div class="flex justify-between p-2 bg-slate-50 rounded-xl">
+            <span class="text-sm text-slate-700"
+              >Es Kopi Cozee (Best Seller)</span
+            ><span class="font-bold text-sm text-amber-700">Rp10.000</span>
+          </div>
+          <div class="flex justify-between p-2 bg-slate-50 rounded-xl">
+            <span class="text-sm text-slate-700">Es Teh Segar Max</span
+            ><span class="font-bold text-sm text-emerald-700">Rp5.000</span>
+          </div>
+        </div>
+
+        <button
+          onclick="tutupModalMenu()"
+          class="w-full bg-slate-800 text-white font-semibold p-3 rounded-xl mt-2"
+        >
+          Tutup Menu
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="modalKopi"
+      style="display: none"
+      class="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4"
+    >
+      <div
+        class="bg-white p-6 rounded-[2.5rem] w-full max-w-md shadow-2xl font-sans"
+      >
+        <div id="formPemesanan">
+          <h3 class="text-xl font-bold text-slate-800 mb-2">
+            ☕ Cozee Coffee Order
+          </h3>
+          <hr class="border-gray-100 mb-4" />
+
+          <label
+            class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1"
+            >Nama:</label
+          >
+          <input
+            type="text"
+            id="namaPelanggan"
+            placeholder="Contoh: Yuni"
+            class="w-full p-3 border border-gray-200 rounded-xl mb-3 focus:outline-none focus:border-indigo-500 text-slate-700"
+          />
+
+          <label
+            class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1"
+            >Kelas:</label
+          >
+          <input
+            type="text"
+            id="kelasPelanggan"
+            placeholder="Contoh: 9207"
+            class="w-full p-3 border border-gray-200 rounded-xl mb-3 focus:outline-none focus:border-indigo-500 text-slate-700"
+          />
+
+          <label
+            class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1"
+            >Pilih Menu:</label
+          >
+          <select
+            id="menuKopi"
+            class="w-full p-3 border border-gray-200 rounded-xl mb-4 bg-white text-slate-700"
+          >
+            <option value="Es Kopi Cozee">Es Kopi Cozee - Rp10.000</option>
+            <option value="Es Teh Segar">Es Teh Segar - Rp5.000</option>
+          </select>
+
+          <label
+            class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2"
+            >Metode Pembayaran:</label
+          >
+          <div class="mb-4 text-slate-700 font-medium">
+            <input
+              type="radio"
+              name="payment"
+              value="Cash"
+              checked
+              onclick="toggleQRIS(false)"
+            />
+            Cash / Tunai
+            <input
+              type="radio"
+              name="payment"
+              value="QRIS"
+              onclick="toggleQRIS(true)"
+              class="ml-4"
+            />
+            QRIS
+          </div>
+
+          <div
+            id="areaQRIS"
+            style="display: none"
+            class="text-center bg-slate-50 p-4 rounded-2xl mb-4 border border-dashed border-gray-200"
+          >
+            <p class="text-xs font-bold text-red-500 mb-2">
+              *Silakan scan & transfer ke QRIS Yuni
+            </p>
+            <img
+              src="Qris_yuni.jpeg"
+              alt="QRIS Yuni"
+              class="w-40 h-40 mx-auto object-contain rounded-xl"
+            />
+          </div>
+
+          <button
+            onclick="kirimKeFirebaseYuni()"
+            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold p-4 rounded-xl shadow-lg transition duration-200 mb-2"
+          >
+            KONFIRMASI PESANAN
+          </button>
+          <button
+            onclick="tutupModalKopi()"
+            class="w-full bg-gray-100 text-slate-600 font-semibold p-3 rounded-xl hover:bg-gray-200 transition duration-200"
+          >
+            Batal
+          </button>
+        </div>
+
+        <div
+          id="statusSukses"
+          style="display: none"
+          class="text-center py-4 p-6"
+        >
+          <span class="text-5xl mb-3 block">🎉</span>
+          <h3 class="text-2xl font-bold text-indigo-600 mb-2">
+            Pesanan Berhasil!
+          </h3>
+          <p class="text-sm text-slate-500 leading-relaxed px-2 mb-4">
+            Terima kasih sudah mengunjungi stand
+            <span class="font-bold text-slate-700"
+              >BN Laundry & Cozee Coffee Hub</span
+            >!
+          </p>
+          <div
+            class="bg-amber-50 border border-dashed border-amber-300 p-4 rounded-2xl mb-4"
+          >
+            <span
+              class="text-xs font-bold text-amber-700 uppercase tracking-widest block mb-1"
+              >STATUS PESANAN:</span
+            >
+            <strong class="text-amber-800 text-lg" id="trackingStatus"
+              >⏳ [Menunggu Konfirmasi Kasir]</strong
+            >
+          </div>
+          <p class="text-xs text-slate-400 mb-4">
+            Tunjukkan layar ini + bukti bayar ke meja kasir ya!
+          </p>
+          <button
+            onclick="tutupModalKopi()"
+            class="w-full bg-slate-800 text-white font-semibold p-3 rounded-xl hover:bg-slate-900 transition"
+          >
+            Tutup
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script>
-      // KONFIGURASI FIREBASE (Link database otomatis terpasang dengan rapi)
+      // 1. KONFIGURASI FIREBASE
       const conf = {
-          databaseURL: "https://smart-laundry-tracking-89f97-default-rtdb.firebaseio.com/"
+        databaseURL:
+          "https://smart-laundry-tracking-89f97-default-rtdb.firebaseio.com/",
       };
-      
       firebase.initializeApp(conf);
       const db = firebase.database();
 
       let qrScanner;
 
+      // 2. FUNGSI SCANNER QR & LACAK LAUNDRY
       function startScan() {
         document
           .getElementById("reader-container")
           .classList.remove("hidden-box");
         document.getElementById("main-menu").classList.add("hidden");
-
         qrScanner = new Html5Qrcode("reader");
-
-        // Kamera
         qrScanner
           .start(
             { facingMode: "environment" },
@@ -271,7 +506,6 @@
           )
           .catch((err) => console.log(err));
 
-        // Galeri
         const fileInput = document.getElementById("input-file");
         fileInput.onchange = (e) => {
           if (e.target.files.length == 0) return;
@@ -302,40 +536,134 @@
           .getElementById("inputCek")
           .value.toUpperCase()
           .trim();
-        
         if (!code) return alert("Masukkan kode order terlebih dahulu!");
 
-        // Bagian ini sekarang langsung membaca data asli dari Cloud Firebase secara real-time!
-        db.ref('orders/' + code).once('value').then((snapshot) => {
-          if (!snapshot.exists()) {
-            return alert("Kode " + code + " Tidak Ditemukan di Cloud!");
-          }
+        db.ref("orders/" + code)
+          .once("value")
+          .then((snapshot) => {
+            if (!snapshot.exists()) {
+              return alert("Kode " + code + " Tidak Ditemukan di Cloud!");
+            }
 
-          const d = snapshot.val();
-          document.getElementById("hasil").classList.remove("hidden-box");
-          document.getElementById("main-menu").classList.add("hidden");
+            const d = snapshot.val();
+            document.getElementById("hasil").classList.remove("hidden-box");
+            document.getElementById("main-menu").classList.add("hidden");
 
-          document.getElementById("resNama").innerText = d.nama;
-          document.getElementById("resStatus").innerText = d.status;
-          document.getElementById("resBerat").innerText = d.berat + " Kg";
-          document.getElementById("resHarga").innerText = "Rp " + d.harga;
+            document.getElementById("resNama").innerText = d.nama;
+            document.getElementById("resStatus").innerText = d.status;
+            document.getElementById("resBerat").innerText = d.berat + " Kg";
+            document.getElementById("resHarga").innerText = "Rp " + d.harga;
 
-          const motorArea = document.getElementById("areaMotor");
-          const motor = document.getElementById("motor");
+            const motorArea = document.getElementById("areaMotor");
+            const motor = document.getElementById("motor");
 
-          if (d.metode === "Antar Kurir") {
-            motorArea.classList.remove("hidden-box");
-            if (d.status.includes("Diantar")) motor.style.left = "50%";
-            else if (d.status.includes("Selesai") || d.status.includes("Sampai") || d.status.includes("Siap"))
-              motor.style.left = "90%";
-            else motor.style.left = "0%";
-          } else {
-            motorArea.classList.add("hidden-box");
-          }
-        }).catch((error) => {
-          alert("Gagal memuat data: " + error.message);
-        });
+            if (d.metode === "Antar Kurir") {
+              motorArea.classList.remove("hidden-box");
+              if (d.status.includes("Diantar")) motor.style.left = "50%";
+              else if (d.status.includes("Selesai")) motor.style.left = "100%";
+            } else {
+              motorArea.classList.add("hidden-box");
+            }
+          });
+      }
+
+      // 3. FUNGSI NAVIGASI MODAL POP-UP
+      function bukaModalLacak() {
+        alert(
+          "Gunakan kolom input 'Masukkan Kode Order' di atas untuk melacak pesanan laundry kamu langsung ya!",
+        );
+      }
+
+      function bukaModalAbsen() {
+        document.getElementById("modalAbsen").style.display = "flex";
+      }
+      function tutupModalAbsen() {
+        document.getElementById("modalAbsen").style.display = "none";
+      }
+
+      function bukaModalMenu() {
+        document.getElementById("modalMenu").style.display = "flex";
+      }
+      function tutupModalMenu() {
+        document.getElementById("modalMenu").style.display = "none";
+      }
+
+      function bukaKopi() {
+        document.getElementById("modalKopi").style.display = "flex";
+        document.getElementById("formPemesanan").style.display = "block";
+        document.getElementById("statusSukses").style.display = "none";
+      }
+      function tutupModalKopi() {
+        document.getElementById("modalKopi").style.display = "none";
+      }
+      function toggleQRIS(show) {
+        document.getElementById("areaQRIS").style.display = show
+          ? "block"
+          : "none";
+      }
+
+      // 4. FUNGSI KIRIM DATA REAL-TIME KE FIREBASE CLOUD
+      function kirimAbsenKeFirebase() {
+        const nama = document.getElementById("namaTamu").value.trim();
+        const asal = document.getElementById("asalTamu").value.trim();
+        const kesan = document.getElementById("kesanTamu").value.trim() || "-";
+
+        if (!nama || !asal) {
+          alert("Nama dan Asal Instansi diisi dulu ya!");
+          return;
+        }
+
+        db.ref("buku_tamu")
+          .push({
+            nama: nama,
+            asal: asal,
+            kesan: kesan,
+            waktu: new Date().toLocaleTimeString("id-ID", {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+          })
+          .then(() => {
+            alert("Terima kasih " + nama + " sudah mengisi buku tamu! ❤️");
+            tutupModalAbsen();
+            document.getElementById("namaTamu").value = "";
+            document.getElementById("asalTamu").value = "";
+            document.getElementById("kesanTamu").value = "";
+          })
+          .catch((err) => alert("Gagal absen: " + err.message));
+      }
+
+      function kirimKeFirebaseYuni() {
+        const nama = document.getElementById("namaPelanggan").value.trim();
+        const kelas = document.getElementById("kelasPelanggan").value.trim();
+        const menu = document.getElementById("menuKopi").value;
+        const payment = document.querySelector(
+          'input[name="payment"]:checked',
+        ).value;
+
+        if (!nama || !kelas) {
+          alert("Nama dan Kelas wajib diisi ya!");
+          return;
+        }
+        db.ref("pesanan_kopi")
+          .push({
+            nama: nama,
+            kelas: kelas,
+            menu: menu,
+            pembayaran: payment,
+            status: "⏳ Menunggu Konfirmasi",
+            waktu: new Date().toLocaleTimeString("id-ID", {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+          })
+          .then(() => {
+            document.getElementById("formPemesanan").style.display = "none";
+            document.getElementById("statusSukses").style.display = "block";
+          })
+          .catch((err) => alert("Gagal memesan: " + err.message));
       }
     </script>
   </body>
 </html>
+
