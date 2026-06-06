@@ -1,289 +1,124 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cozee Hub - Realtime Dashboard</title>
-    <!-- Framework CSS Premium -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Ikon-Ikon Modern -->
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-      rel="stylesheet"
-    />
-    <!-- Library Firebase Versi Stabil -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <!-- Library Firebase Cloud Resmi -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap");
-      body {
-        font-family: "Plus Jakarta Sans", sans-serif;
-        background-color: #f8fafc;
-      }
+        @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap");
+        body { font-family: "Plus Jakarta Sans", sans-serif; background-color: #f8fafc; }
     </style>
-  </head>
-  <body class="p-4 md:p-8">
+</head>
+<body class="p-4 md:p-8">
+
     <div class="max-w-7xl mx-auto">
-      <!-- HEADER UTAMA -->
-      <header
-        class="bg-white p-6 rounded-3xl shadow-sm mb-6 border border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
-      >
-        <div>
-          <h1 class="text-2xl font-extrabold text-slate-800 tracking-tight">
-            ☕ Cozee Hub Monitor
-          </h1>
-          <p class="text-xs text-slate-400 mt-1">
-            Real-time Tracker untuk Stand Pameran 24 Juni
-          </p>
-        </div>
-        <!-- Status Koneksi Firebase -->
-        <div
-          id="statusKoneksi"
-          class="bg-amber-50 text-amber-600 text-[11px] font-bold px-4 py-1.5 rounded-full flex items-center gap-2 border border-amber-100 transition-all duration-300"
-        >
-          <i class="fas fa-spinner animate-spin"></i> Menghubungkan ke Cloud...
-        </div>
-      </header>
-
-      <!-- LAYOUT GRID UTAMA -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- KOLOM KIRI: ANTREAN PESANAN KOPI (Porsi Besar) -->
-        <div
-          class="lg:col-span-2 bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex flex-col"
-        >
-          <div
-            class="flex items-center justify-between mb-6 border-b border-slate-50 pb-4"
-          >
-            <div class="flex items-center gap-2">
-              <span class="p-2 bg-amber-50 rounded-xl text-amber-500"
-                ><i class="fas fa-coffee text-lg"></i
-              ></span>
-              <div>
-                <h2 class="text-base font-bold text-slate-800">
-                  Antrean Pesanan Kopi / Teh
-                </h2>
-                <p class="text-[11px] text-slate-400">
-                  Kelola status pesanan pelanggan stand kamu
-                </p>
-              </div>
+        <!-- HEADER -->
+        <header class="bg-white p-6 rounded-3xl shadow-sm mb-6 border border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+                <h1 class="text-2xl font-extrabold text-slate-800 tracking-tight">☕ Cozee Hub Monitor</h1>
+                <p class="text-xs text-slate-400 mt-1">Real-time Tracker untuk Stand Pameran</p>
             </div>
-          </div>
-
-          <!-- Tabel Pesanan Kopi -->
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr
-                  class="border-b border-slate-100 text-[10px] text-slate-400 uppercase font-bold tracking-wider"
-                >
-                  <th class="pb-3 pl-2">Pelanggan</th>
-                  <th class="pb-3">Menu Pesanan</th>
-                  <th class="pb-3">Metode</th>
-                  <th class="pb-3">Status</th>
-                  <th class="pb-3 pr-2 text-right">Aksi</th>
-                </tr>
-              </thead>
-              <tbody
-                id="tabelKopi"
-                class="text-xs text-slate-600 divide-y divide-slate-50"
-              >
-                <!-- Data Kopi akan auto-inject ke sini -->
-                <tr>
-                  <td
-                    colspan="5"
-                    class="py-12 text-center text-slate-400 italic"
-                  >
-                    <i
-                      class="fas fa-database animate-pulse text-2xl mb-2 block text-slate-300"
-                    ></i>
-                    Menunggu sinyal data masuk...
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- KOLOM KANAN: BUKU TAMU / ABSENSI (Porsi Pas) -->
-        <div
-          class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 h-fit flex flex-col"
-        >
-          <div
-            class="flex items-center justify-between mb-6 border-b border-slate-50 pb-4"
-          >
-            <div class="flex items-center gap-2">
-              <span class="p-2 bg-indigo-50 rounded-xl text-indigo-500"
-                ><i class="fas fa-user-check text-lg"></i
-              ></span>
-              <div>
-                <h2 class="text-base font-bold text-slate-800">
-                  Buku Tamu Pengunjung
-                </h2>
-                <p class="text-[11px] text-slate-400">
-                  Siapa saja yang mampir ke stand kamu
-                </p>
-              </div>
+            <div id="statusKoneksi" class="bg-amber-50 text-amber-600 text-[11px] font-bold px-4 py-1.5 rounded-full flex items-center gap-2 border border-amber-100">
+                <i class="fas fa-spinner animate-spin"></i> Menghubungkan ke Cloud...
             </div>
-          </div>
+        </header>
 
-          <!-- List Pengunjung -->
-          <div
-            id="listBukuTamu"
-            class="space-y-3 max-h-[480px] overflow-y-auto pr-1"
-          >
-            <!-- Data Tamu akan auto-inject ke sini -->
-            <p class="text-center text-slate-400 italic py-12 text-xs">
-              Belum ada tamu yang absen...
-            </p>
-          </div>
+        <!-- GRID -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- KOLOM KIRI: KOPI -->
+            <div class="lg:col-span-2 bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                <h2 class="text-base font-bold text-slate-800 mb-4">🛒 Antrean Pesanan Kopi</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b border-slate-100 text-[10px] text-slate-400 uppercase font-bold">
+                                <th class="pb-3">Pelanggan</th>
+                                <th class="pb-3">Menu</th>
+                                <th class="pb-3">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelKopi" class="text-xs text-slate-600 divide-y divide-slate-50">
+                            <tr><td colspan="3" class="py-8 text-center text-slate-400 italic">Memuat data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- KOLOM KANAN: ABSEN -->
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                <h2 class="text-base font-bold text-slate-800 mb-4">👋 Buku Tamu</h2>
+                <div id="listBukuTamu" class="space-y-3 text-xs">
+                    <p class="text-center text-slate-400 italic py-8">Memuat data tamu...</p>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 
-    <!-- CORE LOGIC FIREBASE -->
     <script>
-      // KODE SAKTI: Menggunakan URL super bersih tanpa tanda garis miring di ujung
-      const firebaseConfig = {
-        databaseURL:
-          "https://smart-laundry-tracking-89f97-default-rtdb.firebaseio.com",
-      };
+        // URL Bersih tanpa tanda garis miring (/) di ujungnya
+        const firebaseConfig = {
+            databaseURL: "https://smart-laundry-tracking-89f97-default-rtdb.firebaseio.com"
+        };
 
-      // Inisialisasi Firebase agar aman dari error duplikasi
-      if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-      } else {
-        firebase.app();
-      }
-
-      const db = firebase.database();
-
-      // 1. MONITOR UTAMA STATUS LOG KONEKSI
-      db.ref(".info/connected").on("value", function (snapshot) {
-        const statusBox = document.getElementById("statusKoneksi");
-        if (snapshot.val() === true) {
-          statusBox.innerHTML = "🟢 Terhubung ke Cloud";
-          statusBox.className =
-            "bg-emerald-50 text-emerald-600 text-[11px] font-bold px-4 py-1.5 rounded-full flex items-center gap-2 border border-emerald-100";
-        } else {
-          statusBox.innerHTML = "🔴 Terputus / Reconnecting...";
-          statusBox.className =
-            "bg-rose-50 text-rose-600 text-[11px] font-bold px-4 py-1.5 rounded-full flex items-center gap-2 border border-rose-100";
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
         }
-      });
 
-      // 2. AMBIL REALTIME DATA KOPI
-      db.ref("pesanan_kopi").on(
-        "value",
-        function (snapshot) {
-          const tabel = document.getElementById("tabelKopi");
+        const db = firebase.database();
 
-          if (!snapshot.exists()) {
-            tabel.innerHTML = (
-              <tr>
-                <td
-                  colspan="5"
-                  class="py-12 text-center text-slate-400 italic font-medium"
-                >
-                  ✨ Database Konek! Belum ada pesanan kopi masuk hari ini.
-                </td>
-              </tr>
-            );
-            return;
-          }
-
-          tabel.innerHTML = "";
-          snapshot.forEach(function (child) {
-            const key = child.key;
-            const data = child.val();
-
-            // Set badge warna status pesanan
-            const isSelesai = data.status && data.status.includes("Selesai");
-            const badgeStyle = isSelesai
-              ? "bg-green-50 text-green-700 border-green-100"
-              : "bg-amber-50 text-amber-700 border-amber-100";
-
-            tabel.innerHTML += `
-                    <tr class="hover:bg-slate-50/60 transition duration-150">
-                        <td class="py-4 pl-2 font-bold text-slate-800">
-                            ${data.nama || "Anonim"} 
-                            <span class="text-[10px] font-medium text-slate-400 block">Kelas: ${data.kelas || "-"}</span>
-                        </td>
-                        <td class="py-4 font-semibold text-slate-700">
-                            ${data.menu || "-"} 
-                            <span class="text-[9px] font-normal text-slate-400 block"><i class="far fa-clock mr-1"></i>${data.waktu || ""}</span>
-                        </td>
-                        <td class="py-4"><span class="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded font-medium text-[9px] uppercase text-slate-600 tracking-wider">${data.pembayaran || "Cash"}</span></td>
-                        <td class="py-4"><span class="px-2.5 py-0.5 rounded-full font-bold text-[9px] border ${badgeStyle}">${data.status || "Diproses"}</span></td>
-                        <td class="py-4 pr-2 text-right">
-                            ${
-                              isSelesai
-                                ? '<span class="text-green-500 font-bold text-xs"><i class="fas fa-check-circle mr-1"></i>Siap</span>'
-                                : `
-                                <button onclick="selesaikanKopi('${key}')" class="bg-indigo-600 text-white px-3 py-1.5 rounded-xl font-bold text-[10px] hover:bg-indigo-700 shadow-sm shadow-indigo-200 transition">Selesai</button>
-                            `
-                            }
-                        </td>
-                    </tr>
-                `;
-          });
-        },
-        function (error) {
-          document.getElementById("tabelKopi").innerHTML = (
-            <tr>
-              <td
-                colspan="5"
-                class="py-8 text-center text-rose-500 font-bold bg-rose-50 rounded-xl"
-              >
-                Error: ${error.message}
-              </td>
-            </tr>
-          );
-        },
-      );
-
-      // FUNGSI UNTUK MERUBAH STATUS PESANAN KOPI
-      function selesaikanKopi(key) {
-        db.ref("pesanan_kopi/" + key).update({
-          status: "🎉 Selesai! Silakan Ambil",
+        // Cek Koneksi
+        db.ref(".info/connected").on("value", function(snapshot) {
+            const statusBox = document.getElementById("statusKoneksi");
+            if (snapshot.val() === true) {
+                statusBox.innerHTML = '🟢 Terhubung ke Cloud';
+                statusBox.className = "bg-emerald-50 text-emerald-600 text-[11px] font-bold px-4 py-1.5 rounded-full flex items-center gap-2 border border-emerald-100";
+            } else {
+                statusBox.innerHTML = '🔴 Terputus';
+                statusBox.className = "bg-rose-50 text-rose-600 text-[11px] font-bold px-4 py-1.5 rounded-full flex items-center gap-2 border border-rose-100";
+            }
         });
-      }
 
-      // 3. AMBIL REALTIME DATA BUKU TAMU
-      db.ref("buku_tamu").on(
-        "value",
-        function (snapshot) {
-          const container = document.getElementById("listBukuTamu");
+        // Ambil Data Kopi
+        db.ref('pesanan_kopi').on('value', function(snapshot) {
+            const tabel = document.getElementById('tabelKopi');
+            if (!snapshot.exists()) {
+                tabel.innerHTML = <tr><td colspan="3" class="py-8 text-center text-slate-400">Database kosong.</td></tr>;
+                return;
+            }
+            tabel.innerHTML = ''; 
+            snapshot.forEach(function(child) {
+                const data = child.val();
+                tabel.innerHTML += `
+                    <tr class="border-b border-slate-50">
+                        <td class="py-3 font-bold text-slate-800">${data.nama || 'Anonim'}</td>
+                        <td class="py-3 font-semibold text-slate-600">${data.menu || '-'}</td>
+                        <td class="py-3"><span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 font-bold text-[10px]">${data.status || 'Diproses'}</span></td>
+                    </tr>`;
+            });
+        });
 
-          if (!snapshot.exists()) {
-            container.innerHTML = (
-              <p class="text-center text-slate-400 italic py-12 text-xs font-medium">
-                👋 Belum ada tamu yang mengisi buku absen stand.
-              </p>
-            );
-            return;
-          }
-
-          container.innerHTML = "";
-          snapshot.forEach(function (child) {
-            const data = child.val();
-            // Data dimasukkan paling atas (terbaru di atas)
-            container.innerHTML =
-              `
-                    <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-100 hover:border-indigo-100 transition duration-150">
-                        <div class="flex justify-between items-start gap-2">
-                            <h4 class="font-bold text-slate-800 text-xs flex items-center gap-1.5"><i class="fas fa-user text-[10px] text-indigo-400"></i> ${data.nama || "Tamu"}</h4>
-                            <span class="text-[9px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-md font-bold tracking-wide uppercase max-w-[100px] truncate">${data.asal || "Umum"}</span>
-                        </div>
-                        <p class="text-[10px] text-slate-500 italic mt-2 bg-white px-2 py-1.5 rounded-lg border border-slate-50">"${data.kesan || "-"}"</p>
-                        <span class="text-[8px] text-slate-400 block text-right mt-2"><i class="far fa-clock mr-1"></i>${data.waktu || ""}</span>
-                    </div>
-                ` + container.innerHTML;
-          });
-        },
-        function (error) {
-          console.log("Buku tamu error: " + error.message);
-        },
-      );
+        // Ambil Buku Tamu
+        db.ref('buku_tamu').on('value', function(snapshot) {
+            const container = document.getElementById('listBukuTamu');
+            if (!snapshot.exists()) {
+                container.innerHTML = <p class="text-center text-slate-400 italic py-8">Belum ada tamu.</p>;
+                return;
+            }
+            container.innerHTML = ''; 
+            snapshot.forEach(function(child) {
+                const data = child.val();
+                container.innerHTML = `
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 mb-2">
+                        <div class="flex justify-between font-bold text-slate-800"><span>${data.nama || 'Tamu'}</span> <span class="text-indigo-600">${data.asal || ''}</span></div>
+                        <p class="text-slate-500 italic mt-1">"${data.kesan || '-'}"</p>
+                    </div>` + container.innerHTML;
+            });
+        });
     </script>
-  </body>
+</body>
 </html>
