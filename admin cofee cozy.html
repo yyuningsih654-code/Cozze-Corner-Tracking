@@ -6,7 +6,6 @@
     <title>Cozee Hub - Realtime Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-    <!-- Library Firebase Cloud Resmi -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
@@ -30,26 +29,28 @@
 
         <!-- GRID -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- KOLOM KIRI: KOPI -->
+            <!-- KOLOM KIRI: ANTRIAN KOPI (SINKRON DATA YUNI) -->
             <div class="lg:col-span-2 bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
                 <h2 class="text-base font-bold text-slate-800 mb-4">🛒 Antrean Pesanan Kopi</h2>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead>
                             <tr class="border-b border-slate-100 text-[10px] text-slate-400 uppercase font-bold">
-                                <th class="pb-3">Pelanggan</th>
-                                <th class="pb-3">Menu</th>
+                                <th class="pb-3">Waktu / Kelas</th>
+                                <th class="pb-3">Nama Pelanggan</th>
+                                <th class="pb-3">Menu Pesanan</th>
+                                <th class="pb-3">Bayar</th>
                                 <th class="pb-3">Status</th>
                             </tr>
                         </thead>
                         <tbody id="tabelKopi" class="text-xs text-slate-600 divide-y divide-slate-50">
-                            <tr><td colspan="3" class="py-8 text-center text-slate-400 italic">Memuat data...</td></tr>
+                            <tr><td colspan="5" class="py-8 text-center text-slate-400 italic">Memuat data pesanan...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- KOLOM KANAN: ABSEN -->
+            <!-- KOLOM KANAN: BUKU TAMU -->
             <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
                 <h2 class="text-base font-bold text-slate-800 mb-4">👋 Buku Tamu</h2>
                 <div id="listBukuTamu" class="space-y-3 text-xs">
@@ -60,7 +61,7 @@
     </div>
 
     <script>
-       // URL Bersih tanpa tanda garis miring (/) di ujungnya
+        // Konfigurasi Firebase Realtime Database Yuni
         const firebaseConfig = {
             databaseURL: "https://smart-laundry-tracking-89f97-default-rtdb.firebaseio.com"
         };
@@ -71,7 +72,7 @@
 
         const db = firebase.database();
 
-        // Cek Koneksi
+        // Monitor Status Koneksi Global
         db.ref(".info/connected").on("value", function(snapshot) {
             const statusBox = document.getElementById("statusKoneksi");
             if (snapshot.val() === true) {
@@ -83,30 +84,32 @@
             }
         });
 
-        // Ambil Data Kopi
+        // Ambil Data dari Node 'pesanan_kopi' sesuai data asli Yuni
         db.ref('pesanan_kopi').on('value', function(snapshot) {
             const tabel = document.getElementById('tabelKopi');
             if (!snapshot.exists()) {
-                tabel.innerHTML = <tr><td colspan="3" class="py-8 text-center text-slate-400">Database kosong.</td></tr>;
+                tabel.innerHTML = <tr><td colspan="5" class="py-8 text-center text-slate-400">Belum ada pesanan masuk.</td></tr>;
                 return;
             }
             tabel.innerHTML = ''; 
             snapshot.forEach(function(child) {
                 const data = child.val();
                 tabel.innerHTML += `
-                    <tr class="border-b border-slate-50">
+                    <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition">
+                        <td class="py-3 text-slate-400 font-medium">${data.waktu || '--.--'} <span class="text-indigo-500 font-bold ml-1">[${data.kelas || '-'}]</span></td>
                         <td class="py-3 font-bold text-slate-800">${data.nama || 'Anonim'}</td>
                         <td class="py-3 font-semibold text-slate-600">${data.menu || '-'}</td>
-                        <td class="py-3"><span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 font-bold text-[10px]">${data.status || 'Diproses'}</span></td>
+                        <td class="py-3 text-slate-500">${data.pembayaran || '-'}</td>
+                        <td class="py-3"><span class="font-bold text-[11px] text-slate-700">${data.status || 'Diproses'}</span></td>
                     </tr>`;
             });
         });
 
-        // Ambil Buku Tamu
+        // Ambil Data dari Node 'buku_tamu'
         db.ref('buku_tamu').on('value', function(snapshot) {
             const container = document.getElementById('listBukuTamu');
             if (!snapshot.exists()) {
-                container.innerHTML = <p class="text-center text-slate-400 italic py-8">Belum ada tamu.</p>;
+                container.innerHTML = <p class="text-center text-slate-400 italic py-8">Belum ada tamu yang mengisi.</p>;
                 return;
             }
             container.innerHTML = ''; 
