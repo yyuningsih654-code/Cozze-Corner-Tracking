@@ -1,134 +1,287 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cozee Hub - Realtime Dashboard</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - Cozee Coffee & Smart Laundry</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap");
-        body { font-family: "Plus Jakarta Sans", sans-serif; background-color: #f8fafc; }
+      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap");
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #f1f5f9;
+      }
     </style>
-</head>
-<body class="p-4 md:p-8">
-
-    <div class="max-w-7xl mx-auto">
-        <!-- HEADER -->
-        <header class="bg-white p-6 rounded-3xl shadow-sm mb-6 border border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-                <h1 class="text-2xl font-extrabold text-slate-800 tracking-tight">☕ Cozee Hub Monitor</h1>
-                <p class="text-xs text-slate-400 mt-1">Real-time Tracker untuk Stand Pameran</p>
-            </div>
-            <div id="statusKoneksi" class="bg-emerald-50 text-emerald-600 text-[11px] font-bold px-4 py-1.5 rounded-full flex items-center gap-2 border border-emerald-100">
-                🟢 Terhubung via REST API
-            </div>
-        </header>
-
-        <!-- GRID -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- ANTREAN KOPI -->
-            <div class="lg:col-span-2 bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-base font-bold text-slate-800">🛒 Antrean Pesanan Kopi</h2>
-                    <button onclick="muatDataKopi()" class="text-xs bg-indigo-50 text-indigo-600 px-3 py-1 rounded-lg font-bold hover:bg-indigo-100">🔄 Refresh Data</button>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead>
-                            <tr class="border-b border-slate-100 text-[10px] text-slate-400 uppercase font-bold">
-                                <th class="pb-3">Waktu / Kelas</th>
-                                <th class="pb-3">Nama Pelanggan</th>
-                                <th class="pb-3">Menu Pesanan</th>
-                                <th class="pb-3">Bayar</th>
-                                <th class="pb-3">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabelKopi" class="text-xs text-slate-600 divide-y divide-slate-50">
-                            <tr><td colspan="5" class="py-8 text-center text-slate-400 italic">Memuat data pesanan...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- BUKU TAMU -->
-            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
-                <h2 class="text-base font-bold text-slate-800 mb-4">👋 Buku Tamu</h2>
-                <div id="listBukuTamu" class="space-y-3 text-xs">
-                    <p class="text-center text-slate-400 italic py-8">Memuat data tamu...</p>
-                </div>
-            </div>
+  </head>
+  <body class="min-h-screen bg-slate-50">
+    <!-- Header Dashboard -->
+    <header
+      class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm"
+    >
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center"
+      >
+        <div class="flex items-center gap-3">
+          <div class="bg-slate-900 p-2 rounded-xl text-white">
+            <i class="fas fa-user-shield text-sm"></i>
+          </div>
+          <div>
+            <h1 class="text-lg font-bold text-slate-800 leading-none">
+              Kasir & Admin Panel
+            </h1>
+            <span class="text-xs font-semibold text-indigo-600"
+              >BN Hub Live Monitor</span
+            >
+          </div>
         </div>
-    </div>
+        <div
+          class="flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full text-xs font-bold"
+        >
+          <span class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>
+          Connected to Cloud
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+      <!-- ================= SECTION 1: ORDERS COFFEE ================= -->
+      <section
+        class="bg-white rounded-3xl shadow-xl shadow-slate-100 border border-slate-100 overflow-hidden"
+      >
+        <div
+          class="p-6 bg-amber-50 border-b border-amber-100 flex justify-between items-center"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 bg-amber-500 text-white rounded-xl flex items-center justify-center shadow-md"
+            >
+              <i class="fas fa-coffee text-lg"></i>
+            </div>
+            <div>
+              <h2 class="text-lg font-bold text-slate-800">
+                Pesanan Kopi & Teh
+              </h2>
+              <p class="text-xs text-amber-700">
+                Daftar pesanan masuk dari Cozee Coffee
+              </p>
+            </div>
+          </div>
+          <span
+            id="badgeKopi"
+            class="bg-amber-100 text-amber-800 text-xs font-extrabold px-3 py-1 rounded-full"
+            >0 Pesanan</span
+          >
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr
+                class="bg-slate-50 border-b border-slate-100 text-xs font-bold text-slate-400 uppercase tracking-wider"
+              >
+                <th class="p-4">Waktu</th>
+                <th class="p-4">Nama Pelanggan</th>
+                <th class="p-4">Kelas</th>
+                <th class="p-4">Menu Pilihan</th>
+                <th class="p-4">Pembayaran</th>
+                <th class="p-4">Aksi / Status</th>
+              </tr>
+            </thead>
+            <tbody
+              id="tabelKopi"
+              class="divide-y divide-slate-100 text-sm text-slate-600"
+            >
+              <tr>
+                <td colspan="6" class="p-8 text-center text-slate-400 italic">
+                  Belum ada pesanan kopi masuk...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================= SECTION 2: BUKU TAMU ================= -->
+      <section
+        class="bg-white rounded-3xl shadow-xl shadow-slate-100 border border-slate-100 overflow-hidden"
+      >
+        <div
+          class="p-6 bg-emerald-50 border-b border-emerald-100 flex justify-between items-center"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 bg-emerald-600 text-white rounded-xl flex items-center justify-center shadow-md"
+            >
+              <i class="fas fa-user-check text-lg"></i>
+            </div>
+            <div>
+              <h2 class="text-lg font-bold text-slate-800">
+                Buku Tamu / Pengunjung Stand
+              </h2>
+              <p class="text-xs text-emerald-700">
+                Daftar dosen, juri, atau teman yang mampir
+              </p>
+            </div>
+          </div>
+          <span
+            id="badgeTamu"
+            class="bg-emerald-100 text-emerald-800 text-xs font-extrabold px-3 py-1 rounded-full"
+            >0 Pengunjung</span
+          >
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr
+                class="bg-slate-50 border-b border-slate-100 text-xs font-bold text-slate-400 uppercase tracking-wider"
+              >
+                <th class="p-4">Waktu</th>
+                <th class="p-4">Nama Pengunjung</th>
+                <th class="p-4">Instansi / Kelas</th>
+                <th class="p-4">Pesan & Kesan</th>
+              </tr>
+            </thead>
+            <tbody
+              id="tabelTamu"
+              class="divide-y divide-slate-100 text-sm text-slate-600"
+            >
+              <tr>
+                <td colspan="4" class="p-8 text-center text-slate-400 italic">
+                  Belum ada tamu yang mengisi absen...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
 
     <script>
-        const urlKopi = "https://smart-laundry-tracking-89f97-default-rtdb.firebaseio.com/pesanan_kopi.json";
-        const urlTamu = "https://smart-laundry-tracking-89f97-default-rtdb.firebaseio.com/buku_tamu.json";
+      // 1. KONEKSI FIREBASE
+      const config = {
+        databaseURL:
+          "https://smart-laundry-tracking-89f97-default-rtdb.firebaseio.com/",
+      };
+      firebase.initializeApp(config);
+      const db = firebase.database();
 
-        function muatDataKopi() {
-            fetch(urlKopi)
-                .then(response => response.json())
-                .then(data => {
-                    const tabel = document.getElementById('tabelKopi');
-                    if (!data) {
-                        tabel.innerHTML = <tr><td colspan="5" class="py-8 text-center text-slate-400">Belum ada pesanan masuk.</td></tr>;
-                        return;
-                    }
-                    tabel.innerHTML = '';
-                    
-                    // PERBAIKAN UTAMA: Menggunakan FOR...IN untuk membongkar ID unik Firebase secara paksa
-                    for (const key in data) {
-                        if (data.hasOwnProperty(key)) {
-                            const item = data[key];
-                            tabel.innerHTML += `
-                                <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition">
-                                    <td class="py-3 text-slate-400 font-medium">${item.waktu || '--.--'} <span class="text-indigo-500 font-bold ml-1">[${item.kelas || '-'}]</span></td>
-                                    <td class="py-3 font-bold text-slate-800">${item.nama || 'Anonim'}</td>
-                                    <td class="py-3 font-semibold text-slate-600">${item.menu || '-'}</td>
-                                    <td class="py-3 text-slate-500">${item.pembayaran || '-'}</td>
-                                    <td class="py-3"><span class="font-bold text-[11px] text-slate-700">${item.status || '⏳ Diproses'}</span></td>
-                                </tr>`;
-                        }
-                    }
-                })
-                .catch(error => {
-                    document.getElementById('tabelKopi').innerHTML = <tr><td colspan="5" class="py-8 text-center text-rose-500">Gagal memuat data. Periksa koneksi internet.</td></tr>;
-                });
+      // 2. AMBIL DATA PESANAN KOPI (REAL-TIME)
+      db.ref("pesanan_kopi").on("value", (snapshot) => {
+        const tbody = document.getElementById("tabelKopi");
+        const badge = document.getElementById("badgeKopi");
+        tbody.innerHTML = "";
+
+        if (!snapshot.exists()) {
+          tbody.innerHTML =
+            '<tr><td colspan="6" class="p-8 text-center text-slate-400 italic">Belum ada pesanan kopi masuk...</td></tr>';
+          badge.innerText = "0 Pesanan";
+          return;
         }
 
-        function muatDataTamu() {
-            fetch(urlTamu)
-                .then(response => response.json())
-                .then(data => {
-                    const container = document.getElementById('listBukuTamu');
-                    if (!data) {
-                        container.innerHTML = <p class="text-center text-slate-400 italic py-8">Belum ada tamu yang mengisi.</p>;
-                        return;
-                    }
-                    container.innerHTML = '';
-                    
-                    for (const key in data) {
-                        if (data.hasOwnProperty(key)) {
-                            const item = data[key];
-                            container.innerHTML = `
-                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 mb-2">
-                                    <div class="flex justify-between font-bold text-slate-800"><span>${item.nama || 'Tamu'}</span></div>
-                                    <p class="text-slate-500 italic mt-1">"${item.menu || item.kesan || '-'}"</p>
-                                </div>` + container.innerHTML;
-                        }
-                    }
-                });
+        let count = 0;
+        let listPesanan = [];
+        snapshot.forEach((child) => {
+          listPesanan.push({ key: child.key, ...child.val() });
+          count++;
+        });
+        listPesanan.reverse();
+        badge.innerText = count + " Pesanan";
+
+        listPesanan.forEach((order) => {
+          let statusColor = "bg-amber-100 text-amber-800";
+          let tombolSelesai = "";
+
+          if (order.status === "✅ Selesai") {
+            statusColor = "bg-emerald-100 text-emerald-800";
+          } else {
+            tombolSelesai =
+              "<button onclick=\"selesaikanPesanan('" +
+              order.key +
+              '\')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1 rounded-xl shadow-md active:scale-95 transition">Selesai</button>';
+          }
+
+          tbody.innerHTML +=
+            "<tr>" +
+            '<td class="p-4 font-semibold text-slate-400 text-xs">' +
+            (order.waktu || "-") +
+            "</td>" +
+            '<td class="p-4 font-bold text-slate-800">' +
+            order.nama +
+            "</td>" +
+            '<td class="p-4"><span class="px-2 py-1 bg-slate-100 text-slate-600 text-xs font-semibold rounded-lg">' +
+            order.kelas +
+            "</span></td>" +
+            '<td class="p-4 font-medium text-indigo-600">' +
+            order.menu +
+            "</td>" +
+            '<td class="p-4 font-semibold text-xs text-slate-500">' +
+            order.pembayaran +
+            "</td>" +
+            '<td class="p-4 flex items-center gap-2 flex-wrap">' +
+            '<span class="px-3 py-1 rounded-full text-xs font-bold ' +
+            statusColor +
+            '">' +
+            order.status +
+            "</span>" +
+            tombolSelesai +
+            "</td>" +
+            "</tr>";
+        });
+      });
+
+      // FUNGSI UPDATE STATUS PESANAN KOPI JADI SELESAI
+      function selesaikanPesanan(id) {
+        db.ref("pesanan_kopi/" + id).update({
+          status: "✅ Selesai",
+        });
+      }
+
+      // 3. AMBIL DATA BUKU TAMU (REAL-TIME)
+      db.ref("buku_tamu").on("value", (snapshot) => {
+        const tbody = document.getElementById("tabelTamu");
+        const badge = document.getElementById("badgeTamu");
+        tbody.innerHTML = "";
+
+        if (!snapshot.exists()) {
+          tbody.innerHTML =
+            '<tr><td colspan="4" class="p-8 text-center text-slate-400 italic">Belum ada tamu yang mengisi absen...</td></tr>';
+          badge.innerText = "0 Pengunjung";
+          return;
         }
 
-        // Jalankan otomatis saat web dibuka
-        muatDataKopi();
-        muatDataTamu();
+        let count = 0;
+        let listTamu = [];
+        snapshot.forEach((child) => {
+          listTamu.push(child.val());
+          count++;
+        });
+        listTamu.reverse();
+        badge.innerText = count + " Pengunjung";
 
-        // Auto-refresh 5 detik
-        setInterval(() => {
-            muatDataKopi();
-            muatDataTamu();
-        }, 5000);
+        listTamu.forEach((tamu) => {
+          tbody.innerHTML +=
+            "<tr>" +
+            '<td class="p-4 font-semibold text-slate-400 text-xs">' +
+            (tamu.waktu || "-") +
+            "</td>" +
+            '<td class="p-4 font-bold text-slate-800">' +
+            tamu.nama +
+            "</td>" +
+            '<td class="p-4"><span class="px-2 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-lg">' +
+            tamu.asal +
+            "</span></td>" +
+            '<td class="p-4 text-slate-600 italic font-medium">"' +
+            tamu.kesan +
+            '"</td>' +
+            "</tr>";
+        });
+      });
     </script>
-</body>
+  </body>
 </html>
+
