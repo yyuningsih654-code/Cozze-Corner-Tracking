@@ -226,114 +226,70 @@
       <div
         class="bg-white p-6 rounded-[2.5rem] w-full max-w-md shadow-2xl text-left font-sans"
       >
-        <h3 class="text-xl font-bold text-slate-800 mb-2">
-          👋🏼 Isi Buku Tamu Stand
-        </h3>
-        <p class="text-xs text-slate-400 mb-3">
-          Halo! Terima kasih sudah mampir ke BN Laundry & Cozee Coffee
-        </p>
-        <hr class="border-gray-100 mb-4" />
+        <!-- INPUT FORM BUKU TAMU -->
+        <div id="formAbsen">
+          <h3 class="text-xl font-bold text-slate-800 mb-2">
+            👋🏼 Isi Buku Tamu Stand
+          </h3>
+          <p class="text-xs text-slate-400 mb-3">
+            Halo! Terima kasih sudah mampir ke BN Laundry & Cozee Coffee
+          </p>
+          <hr class="border-gray-100 mb-4" />
 
-        <label
-          class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1"
-          >Nama Pengunjung:</label
-        >
-        <input
-          type="text"
-          id="namaTamu"
-          placeholder="Nama kamu / Nama Dosen"
-          class="w-full p-3 border border-gray-200 rounded-xl mb-3 text-slate-700"
-        />
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Nama Pengunjung:</label>
+          <input
+            type="text"
+            id="namaTamu"
+            placeholder="Nama kamu / Nama Dosen"
+            class="w-full p-3 border border-gray-200 rounded-xl mb-3 text-slate-700 focus:outline-none focus:border-emerald-500"
+          />
 
-        <label
-          class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1"
-          >Asal Kelas / Instansi:</label
-        >
-        <input
-          type="text"
-          id="asalTamu"
-          placeholder="Contoh: Ilkom 2024 / Juri 1"
-          class="w-full p-3 border border-gray-200 rounded-xl mb-3 text-slate-700"
-        />
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Asal Kelas / Instansi:</label>
+          <input
+            type="text"
+            id="asalTamu"
+            placeholder="Contoh: Ilkom 2024 / Juri 1"
+            class="w-full p-3 border border-gray-200 rounded-xl mb-3 text-slate-700 focus:outline-none focus:border-emerald-500"
+          />
 
-        <label
-          class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1"
-          >Pesan & Kesan:</label
-        >
-        <textarea
-          id="kesanTamu"
-          placeholder="Stand-nya kreatif banget! Sukses ya!"
-          class="w-full p-3 border border-gray-200 rounded-xl mb-4 text-slate-700 h-20"
-        ></textarea>
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Pesan & Kesan:</label>
+          <textarea
+            id="kesanTamu"
+            placeholder="Stand-nya kreatif banget! Sukses ya!"
+            class="w-full p-3 border border-gray-200 rounded-xl mb-4 text-slate-700 h-20 focus:outline-none focus:border-emerald-500"
+          ></textarea>
 
-        <button
-          onclick="kirimAbsenKeFirebase()"
-          class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold p-4 rounded-xl shadow-lg mb-2"
-        >
-          KIRIM ABSENSI
-        </button>
-        <button
-          onclick="tutupModalAbsen()"
-          class="w-full bg-gray-100 text-slate-600 font-semibold p-3 rounded-xl"
-        >
-          Batal
-        </button>
-      </div>
-    </div>
-
-    <div
-      id="modalMenu"
-      style="display: none"
-      class="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4"
-    >
-      <div
-        class="bg-white p-6 rounded-[2.5rem] w-full max-w-md shadow-2xl text-left font-sans overflow-y-auto max-h-[85vh]"
-      >
-        <h3 class="text-xl font-bold text-slate-800 mb-2">
-          📋 Daftar Layanan & Menu
-        </h3>
-        <hr class="border-gray-100 mb-4" />
-
-        <h4
-          class="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-2"
-        >
-          🧺 BN LAUNDRY SERVICES
-        </h4>
-        <div class="space-y-2 mb-4">
-          <div class="flex justify-between p-2 bg-slate-50 rounded-xl">
-            <span class="text-sm text-slate-700"
-              >Cuci Kering Setrika (Per Kg)</span
-            ><span class="font-bold text-sm text-slate-800">Rp7.000</span>
-          </div>
-          <div class="flex justify-between p-2 bg-slate-50 rounded-xl">
-            <span class="text-sm text-slate-700">Cuci Express (6 Jam)</span
-            ><span class="font-bold text-sm text-slate-800">Rp12.000</span>
-          </div>
+          <button
+            onclick="kirimAbsenKeFirebase()"
+            class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold p-4 rounded-xl shadow-lg mb-2 transition active:scale-95"
+          >
+            KIRIM ABSENSI
+          </button>
+          <button
+            onclick="tutupModalAbsen()"
+            class="w-full bg-gray-100 text-slate-600 font-semibold p-3 rounded-xl hover:bg-gray-200 transition"
+          >
+            Batal
+          </button>
         </div>
 
-        <h4
-          class="text-xs font-bold text-amber-600 uppercase tracking-widest mb-2"
-        >
-          ☕ COZEE COFFEE MENU
-        </h4>
-        <div class="space-y-2 mb-4">
-          <div class="flex justify-between p-2 bg-slate-50 rounded-xl">
-            <span class="text-sm text-slate-700"
-              >Es Kopi Cozee (Best Seller)</span
-            ><span class="font-bold text-sm text-amber-700">Rp10.000</span>
+        <!-- TAMPILAN SUKSES ESTETIK (PENGGANTI ALERT JADUL) -->
+        <div id="suksesAbsen" style="display: none" class="text-center py-6">
+          <span class="text-6xl mb-4 block animate-bounce">💝</span>
+          <h3 class="text-2xl font-black text-emerald-600 mb-2">Terima Kasih Banyak!</h3>
+          <p class="text-sm text-slate-500 leading-relaxed px-4 mb-6">
+            Kehadiran dan dukunganmu di stand <span class="font-bold text-slate-700">BN Laundry & Cozee Coffee</span> berharga banget buat kami!
+          </p>
+          <div class="bg-emerald-50 border border-dashed border-emerald-200 p-3 rounded-2xl mb-6">
+            <p class="text-xs font-bold text-emerald-800 italic">"Semoga harimu menyenangkan! ✨"</p>
           </div>
-          <div class="flex justify-between p-2 bg-slate-50 rounded-xl">
-            <span class="text-sm text-slate-700">Es Teh Segar Max</span
-            ><span class="font-bold text-sm text-emerald-700">Rp5.000</span>
-          </div>
+          <button
+            onclick="tutupModalAbsen()"
+            class="w-full bg-slate-800 hover:bg-slate-900 text-white font-semibold p-3 rounded-xl transition shadow-md"
+          >
+            Sama-sama
+          </button>
         </div>
-
-        <button
-          onclick="tutupModalMenu()"
-          class="w-full bg-slate-800 text-white font-semibold p-3 rounded-xl mt-2"
-        >
-          Tutup Menu
-        </button>
       </div>
     </div>
 
@@ -573,17 +529,52 @@
           "Gunakan kolom input 'Masukkan Kode Order' di atas untuk melacak pesanan laundry kamu langsung ya!",
         );
       }
-
       function bukaModalAbsen() {
         document.getElementById("modalAbsen").style.display = "flex";
-      }
-      function tutupModalAbsen() {
-        document.getElementById("modalAbsen").style.display = "none";
+        document.getElementById("formAbsen").style.display = "block"; // Munculkan form input kembali
+        document.getElementById("suksesAbsen").style.display = "none";  // Sembunyikan layar sukses dulu
       }
 
+      function tutupModalAbsen() {
+        document.getElementById("modalAbsen").style.display = "none";
+        // Reset isi form biar kosong lagi pas dibuka nanti
+        document.getElementById("namaTamu").value = "";
+        document.getElementById("asalTamu").value = "";
+        document.getElementById("kesanTamu").value = "";
+      }
+
+      function kirimAbsenKeFirebase() {
+        const nama = document.getElementById("namaTamu").value.trim();
+        const asal = document.getElementById("asalTamu").value.trim();
+        const kesan = document.getElementById("kesanTamu").value.trim();
+
+        if (!nama || !asal) {
+          alert("Nama dan Asal Instansi wajib diisi ya!");
+          return;
+        }
+
+        db.ref("buku_tamu").push({
+          nama: nama,
+          asal: asal,
+          kesan: kesan,
+          waktu: new Date().toLocaleTimeString("id-ID", { hour: '2-digit', minute: '2-digit' })
+        })
+        .then(() => {
+          // JALANKAN EFEK LOVE & GANTI TAMPILAN SECARA MULUS
+          if (typeof efekLoveMuncrat === "function") {
+            efekLoveMuncrat(); 
+          }
+          
+          // Sembunyikan form input, lalu munculkan pesan sukses nan estetik
+          document.getElementById("formAbsen").style.display = "none";
+          document.getElementById("suksesAbsen").style.display = "block";
+        })
+        .catch((err) => alert("Gagal mengirim absensi: " + err.message));
+      }
       function bukaModalMenu() {
         document.getElementById("modalMenu").style.display = "flex";
       }
+
       function tutupModalMenu() {
         document.getElementById("modalMenu").style.display = "none";
       }
@@ -593,46 +584,20 @@
         document.getElementById("formPemesanan").style.display = "block";
         document.getElementById("statusSukses").style.display = "none";
       }
+
       function tutupModalKopi() {
         document.getElementById("modalKopi").style.display = "none";
       }
+
       function toggleQRIS(show) {
         document.getElementById("areaQRIS").style.display = show
           ? "block"
           : "none";
       }
 
-      // 4. FUNGSI KIRIM DATA REAL-TIME KE FIREBASE CLOUD
-      function kirimAbsenKeFirebase() {
-        const nama = document.getElementById("namaTamu").value.trim();
-        const asal = document.getElementById("asalTamu").value.trim();
-        const kesan = document.getElementById("kesanTamu").value.trim() || "-";
-
-        if (!nama || !asal) {
-          alert("Nama dan Asal Instansi diisi dulu ya!");
-          return;
-        }
-
-        db.ref("buku_tamu")
-          .push({
-            nama: nama,
-            asal: asal,
-            kesan: kesan,
-            waktu: new Date().toLocaleTimeString("id-ID", {
-              hour: "2-digit",
-              minute: "2-digit",
-            }),
-          })
-          .then(() => {
-            alert("Terima kasih " + nama + " sudah mengisi buku tamu! ❤️");
-            tutupModalAbsen();
-            document.getElementById("namaTamu").value = "";
-            document.getElementById("asalTamu").value = "";
-            document.getElementById("kesanTamu").value = "";
-          })
-          .catch((err) => alert("Gagal absen: " + err.message));
-      }
-
+      // ==========================================
+      // FUNGSI INI YANG MEMBUAT MONITORNYA JADI LIVE!
+      // ==========================================
       function kirimKeFirebaseYuni() {
         const nama = document.getElementById("namaPelanggan").value.trim();
         const kelas = document.getElementById("kelasPelanggan").value.trim();
@@ -645,6 +610,7 @@
           alert("Nama dan Kelas wajib diisi ya!");
           return;
         }
+
         db.ref("pesanan_kopi")
           .push({
             nama: nama,
@@ -657,11 +623,38 @@
               minute: "2-digit",
             }),
           })
-          .then(() => {
+          .then((docRef) => {
+            const newKey = docRef.key; // Mengambil ID unik pesanan dari Firebase
+
+            // Efek animasi sukses
             document.getElementById("formPemesanan").style.display = "none";
             document.getElementById("statusSukses").style.display = "block";
+
+            // Pasang status default awal di layar pelanggan
+            document.getElementById("trackingStatus").innerText =
+              "⏳ Menunggu Konfirmasi";
+
+            // SENSOR LIVE SINKRONISASI: Memantau perubahan tombol admin secara real-time
+            db.ref("pesanan_kopi/" + newKey + "/status").on(
+              "value",
+              (snapshot) => {
+                if (snapshot.exists()) {
+                  document.getElementById("trackingStatus").innerText =
+                    snapshot.val();
+                }
+              },
+            );
+
+            // Reset form input
+            document.getElementById("namaPelanggan").value = "";
+            document.getElementById("kelasPelanggan").value = "";
           })
           .catch((err) => alert("Gagal memesan: " + err.message));
+      }
+
+      // Fungsi efek love pendukung (bisa disesuaikan dengan fungsi efekLoveMuncrat milikmu jika ada)
+      function efekLoveMuncrat() {
+        console.log("Pesanan sukses dikonfirmasi!");
       }
     </script>
   </body>
