@@ -837,7 +837,7 @@
           <input
             type="text"
             id="asalTamu"
-            placeholder="Asal Kelas / Instansi..."
+            placeholder="Asal Kelas/prodi"
           />
           <textarea
             id="kesanTamu"
@@ -1216,11 +1216,11 @@
 
       // ROLET GAME SYSTEM
       const hadiahRoda = [
-        "Free permen",
-        "free permen",
+        "Free Permen",
+        "free donat",
         "Diskon 1K",
-        "Free Donat",
-        "free risol",
+        "Free permen",
+        "free donat",
         "Diskon 1K",
       ];
       const warnaRoda = [
@@ -1282,7 +1282,7 @@
           if (hasilAkhirHadiah.includes("permen")) {
             document.getElementById("hasil-roda").style.color = "#f43f5e";
             document.getElementById("hasil-roda").innerText =
-              `Yah, ${hasilAkhirHadiah}! yeayy kmu dapat permen!`;
+              `Yeayy, ${hasilAkhirHadiah}!`;
           } else {
             document.getElementById("hasil-roda").style.color = "#16a34a";
             document.getElementById("hasil-roda").innerText =
