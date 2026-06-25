@@ -1,456 +1,338 @@
-<div class="cozee-vertical-section">
-  <div class="cozee-vertical-container">
-    
-    <div class="vertical-brand-header">
-      <span class="v-brand-badge">☕ COZEE CORNER</span>
-      <span class="v-brand-slogan">sip, bite & relax</span>
-    </div>
-
-    <div class="vertical-camera-monitor blue-monitor">
-      <span class="monitor-icon top-left">☕</span>
-      <span class="monitor-icon top-right">🍰</span>
-      
-      <video id="v-video" autoplay playsinline></video>
-      <div id="v-overlay-text" class="v-blink">TAP PLAY! WAJAH GA AKAN LONJONG</div>
-      
-      <div class="monitor-slogan">sip • bite • relax</div>
-    </div>
-
-    <div class="cozee-real-photostrip">
-      
-      <div class="strip-header-title">
-        <h3>Cozee Corner</h3>
-        <p>sip, bite & relax</p>
-      </div>
-
-      <div class="v-frame v-color-pink">
-        <div class="v-slot-inside square-slot">
-          <canvas id="v-canvas-1"></canvas>
-          <span class="v-number">01</span>
+    <div class="pb-wrapper">
+    <div class="pb-main-card">
+        
+        <div class="pb-top-info">
+            <div class="pb-badge">☕ COZEE PHOTOBOX</div>
+            <div class="pb-slogan-top">sip, bite & relax</div>
         </div>
-      </div>
 
-      <div class="v-frame v-color-orange">
-        <div class="v-slot-inside square-slot">
-          <canvas id="v-canvas-2"></canvas>
-          <span class="v-number">02</span>
+        <div class="pb-camera-window">
+            <div class="pb-decor-corner">✨</div>
+            <video id="pb-video" autoplay playsinline></video>
+            <div id="pb-hint" class="pb-blink">SAY CHEESE! TEKAN BUKA KAMERA</div>
         </div>
-      </div>
 
-      <div class="v-frame v-color-green">
-        <div class="v-slot-inside square-slot">
-          <canvas id="v-canvas-3"></canvas>
-          <span class="v-number">03</span>
+        <div class="pb-btn-group">
+            <button id="btn-start" class="pb-btn btn-blue-sky" onclick="startKamera()">BUKA KAMERA 🎥</button>
+            <button id="btn-snap" class="pb-btn btn-red" onclick="ambilFoto()" style="display:none;">JEPRET (0/3) ⚡</button>
+            <button id="btn-save" class="pb-btn btn-yellow" onclick="downloadStrip()" style="display:none;">SIMPAN STRIP FOTO 💾</button>
+            <button id="btn-reset" class="pb-btn btn-grey" onclick="resetApp()" style="display:none;">ULANGI FOTO 🔄</button>
         </div>
-      </div>
 
-      <div class="v-strip-footer">
-        <p></p>
-      </div>
+        <div class="pb-strip-preview">
+            <div class="pb-strip-inner">
+                <div class="strip-brand">
+                    <h3>Cozee Corner</h3>
+                    <p>sip, bite & relax</p>
+                </div>
+                
+                <div class="strip-frame">
+                    <canvas id="c1"></canvas>
+                </div>
+                <div class="strip-frame">
+                    <canvas id="c2"></canvas>
+                </div>
+                <div class="strip-frame">
+                    <canvas id="c3"></canvas>
+                </div>
+
+                <div class="strip-footer-text">
+                    ✨ captured at cozee corner ✨
+                </div>
+            </div>
+        </div>
 
     </div>
-
-    <div class="v-action-area">
-      <button id="btn-v-start" class="v-bubble-btn v-btn-blue" onclick="bukaVKamera()">BUKA KAMERA 🎥</button>
-      <button id="btn-v-snap" class="v-bubble-btn v-btn-red" onclick="jepretVFoto()" style="display: none;">JEPRET (0/3) ⚡</button>
-      <button id="btn-v-save" class="v-bubble-btn v-btn-yellow" onclick="unduhVStrip()" style="display: none;">SIMPAN FOTO 💾</button>
-      <button id="btn-v-reset" class="v-bubble-btn v-btn-grey" onclick="resetVApp()" style="display: none;">ULANGI 🔄</button>
-    </div>
-
-  </div>
 </div>
 
-<canvas id="v-final-hidden-canvas" style="display: none;"></canvas>
+<canvas id="final-canvas" style="display:none;"></canvas>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&display=swap');
 
-  /* Background Biru Langit Gradasi Web */
-  .cozee-vertical-section {
-    width: 100%;
-    min-height: 100vh;
-    background-image: linear-gradient(to bottom, #93c5fd, #cffafe);
-    font-family: 'Fredoka', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 20px 10px;
-    box-sizing: border-box;
-  }
+    /* Warna border & teks utama diganti Biru Gelap Estetik, bukan ungu lagi */
+    :root {
+        --cozee-blue-border: #0284c7; /* Biru tegas untuk border */
+        --cozee-blue-bg: #bae6fd;     /* Biru langit pastel untuk strip */
+        --cozee-text: #0369a1;        /* Biru tua untuk tulisan */
+    }
 
-  /* Kotak Container Utama (Matching Border/Radius) */
-  .cozee-vertical-container {
-    background-color: #ffffff;
-    border: 4px solid #3b0764;
-    border-radius: 32px;
-    padding: 15px;
-    width: 100%;
-    max-width: 360px;
-    box-shadow: 0 10px 0px rgba(59, 7, 100, 0.15);
-    box-sizing: border-box;
-  }
+    .pb-wrapper {
+        width: 100%;
+        min-height: 100vh;
+        background-image: linear-gradient(to bottom, #93c5fd, #cffafe); /* Gradasi Biru Langit Web Kamu */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px 10px;
+        font-family: 'Fredoka', sans-serif;
+    }
 
-  .vertical-brand-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-    padding: 0 5px;
-  }
+    .pb-main-card {
+        background: white;
+        width: 100%;
+        max-width: 380px;
+        border: 4px solid var(--cozee-blue-border);
+        border-radius: 35px;
+        padding: 20px;
+        box-shadow: 0 10px 0px rgba(2, 132, 199, 0.15);
+    }
 
-  .v-brand-badge {
-    background: #ffffff;
-    color: #3b0764;
-    border: 3px solid #3b0764;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 700;
-    box-shadow: 0 3px 0 #3b0764;
-  }
+    .pb-top-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
 
-  .v-brand-slogan {
-    font-size: 10px;
-    color: #3b0764;
-    font-style: italic;
-    font-weight: 700;
-  }
+    .pb-badge {
+        background: #fb7185; /* Pink pastel button accent */
+        color: white;
+        padding: 5px 12px;
+        border: 3px solid var(--cozee-blue-border);
+        border-radius: 12px;
+        font-size: 11px;
+    }
 
-  /* --- JENDELA KAMERA (BLUE THEME + KOTAK 1:1) --- */
-  .blue-monitor {
-    width: 100%;
-    padding-top: 100%; /* MEMAKSA JADI KOTAK SEMPURNA */
-    position: relative;
-    background-color: #bae6fd; /* Biru bingkai tema */
-    border: 4px solid #3b0764;
-    border-radius: 20px;
-    margin-bottom: 15px;
-    overflow: hidden;
-    box-shadow: 0 5px 0 rgba(59, 7, 100, 0.1);
-  }
+    .pb-slogan-top {
+        font-size: 11px;
+        color: var(--cozee-text);
+        font-style: italic;
+        font-weight: 700;
+    }
 
-  #v-video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* CSS Ajaib Potong Wajah Lonjong */
-    transform: scaleX(-1); /* Efek kaca cermin live */
-    border: 3px solid #3b0764; /* Border video di dalam bingkai biru */
-    box-sizing: border-box;
-    border-radius: 12px;
-  }
+    /* Monitor Kamera Square (Warna Biru) */
+    .pb-camera-window {
+        width: 100%;
+        padding-top: 100%; 
+        position: relative;
+        background: #0c4a6e; /* Background kamera sebelum aktif */
+        border: 4px solid var(--cozee-blue-border);
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
 
-  /* Elemen Tema di Pojok Layar */
-  .monitor-icon {
-    position: absolute;
-    font-size: 20px;
-    z-index: 10;
-    filter: drop-shadow(0 2px 0 rgba(59,7,100,0.5));
-  }
-  .top-left { top: 8px; left: 8px; }
-  .top-right { top: 8px; right: 8px; }
+    #pb-video {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        object-fit: cover; /* Wajah anti-lonjong */
+        transform: scaleX(-1); /* Efek cermin pas ngaca */
+    }
 
-  /* Slogan di Bawah Layar Preview */
-  .monitor-slogan {
-    position: absolute;
-    bottom: 5px;
-    width: 100%;
-    text-align: center;
-    color: #3b0764;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: lowercase;
-    letter-spacing: 0.5px;
-    z-index: 10;
-  }
+    .pb-blink {
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        color: #fef08a; font-size: 12px; text-align: center;
+    }
 
-  .v-blink {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #fef08a;
-    font-size: 12px;
-    font-weight: 700;
-    z-index: 10;
-    text-shadow: 0 2px 0 #3b0764;
-  }
+    .pb-decor-corner {
+        position: absolute; top: 10px; right: 10px; font-size: 20px; z-index: 5;
+    }
 
-  /* --- TAMPILAN 3 STRIP KOTAK KE BAWAH --- */
-  .cozee-real-photostrip {
-    background-color: #ffffff;
-    border: 4px solid #3b0764;
-    border-radius: 20px;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 15px;
-    box-shadow: 0 6px 0 rgba(59, 7, 100, 0.1);
-  }
+    /* --- STRIP PREVIEW VERTIKAL WARNA BIRU --- */
+    .pb-strip-preview {
+        background: var(--cozee-blue-bg); /* Bingkai Full Biru Muda */
+        border: 4px solid var(--cozee-blue-border);
+        border-radius: 24px;
+        padding: 18px 14px;
+        box-shadow: 0 6px 0 rgba(2, 132, 199, 0.1);
+    }
 
-  .strip-header-title h3 {
-    margin: 0;
-    color: #3b0764;
-    font-size: 16px;
-    text-align: center;
-  }
+    .pb-strip-inner {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
 
-  .strip-header-title p {
-    margin: 1px 0 3px 0;
-    color: #fb7185;
-    font-size: 10px;
-    text-align: center;
-    font-weight: 700;
-  }
+    .strip-brand h3 { 
+        margin: 0; 
+        font-size: 22px; 
+        color: var(--cozee-text);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .strip-brand p { 
+        margin: 2px 0 0 0; 
+        font-size: 11px; 
+        color: #e11d48; /* Warna rose pink cerah untuk slogan */
+        font-style: italic; 
+        font-weight: 700; 
+    }
 
-  .v-frame {
-    border: 3px solid #3b0764;
-    border-radius: 12px;
-    padding: 5px 5px 12px 5px;
-    box-shadow: 0 4px 0 #3b0764;
-  }
+    .strip-frame {
+        background: white;
+        padding: 8px;
+        border: 2px solid var(--cozee-blue-border);
+        border-radius: 12px;
+        box-shadow: 0 3px 0 var(--cozee-blue-border);
+    }
 
-  .v-color-pink { background-color: #fbcfe8; }
-  .v-color-orange { background-color: #fed7aa; }
-  .v-color-green { background-color: #bbf7d0; }
+    .strip-frame canvas {
+        width: 100%;
+        aspect-ratio: 1/1; /* Kotak Sempurna */
+        background: #f0f9ff;
+        border-radius: 6px;
+        display: block;
+    }
 
-  /* --- SLOT FOTO (SQUARE / KOTAK SEMPURNA 1:1) --- */
-  .square-slot {
-    width: 100%;
-    padding-top: 100%; /* MEMAKSA JADI KOTAK SEMPURNA */
-    position: relative;
-    background: #ffffff;
-    border: 2px solid #3b0764;
-    border-radius: 8px;
-    overflow: hidden;
-  }
+    /* Footer text pengganti nama geng */
+    .strip-footer-text {
+        font-size: 10px;
+        color: var(--cozee-text);
+        font-weight: 700;
+        opacity: 0.8;
+        margin-top: 4px;
+    }
 
-  .square-slot canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
+    /* Buttons Bubble Style (Matching) */
+    .pb-btn-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
 
-  .v-number {
-    position: absolute;
-    top: 3px;
-    left: 4px;
-    font-size: 10px;
-    color: #3b0764;
-    font-weight: 700;
-    opacity: 0.3;
-  }
+    .pb-btn {
+        border: 3px solid var(--cozee-blue-border);
+        padding: 12px;
+        border-radius: 20px;
+        font-family: 'Fredoka', sans-serif;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+        transition: 0.05s;
+    }
 
-  .v-strip-footer {
-    text-align: center;
-    margin-top: 2px;
-    border-top: 2px dashed #fbcfe8;
-    padding-top: 6px;
-  }
+    .pb-btn:active { transform: translateY(4px); box-shadow: 0 0px 0 var(--cozee-blue-border) !important; }
 
-  .v-strip-footer p {
-    margin: 0;
-    font-size: 9px;
-    color: #3b0764;
-    opacity: 0.6;
-    font-weight: 700;
-    letter-spacing: 0.2px;
-  }
+    .btn-blue-sky { background: #bae6fd; color: var(--cozee-text); box-shadow: 0 4px 0 var(--cozee-blue-border); }
+    .btn-red { background: #f43f5e; color: white; box-shadow: 0 4px 0 var(--cozee-blue-border); }
+    .btn-yellow { background: #fef08a; color: var(--cozee-text); box-shadow: 0 4px 0 var(--cozee-blue-border); }
+    .btn-grey { background: #e2e8f0; color: #64748b; border-radius: 12px; padding: 8px; font-size: 11px; border: 2px solid #cbd5e1;}
 
-  /* Area Tombol Aksi (Matching Buttons) */
-  .v-action-area {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .v-bubble-btn {
-    width: 100%;
-    border: 3px solid #3b0764;
-    padding: 10px;
-    font-family: 'Fredoka', sans-serif;
-    font-weight: 700;
-    font-size: 14px;
-    border-radius: 16px;
-    cursor: pointer;
-    transition: transform 0.05s ease;
-  }
-
-  .v-bubble-btn:active {
-    transform: translateY(3px);
-    box-shadow: 0 0px 0 #3b0764 !important;
-  }
-
-  .v-btn-blue { background-color: #bae6fd; color: #3b0764; box-shadow: 0 4px 0 #3b0764; }
-  .v-btn-red { background-color: #f43f5e; color: white; box-shadow: 0 4px 0 #3b0764; }
-  .v-btn-yellow { background-color: #fef08a; color: #3b0764; box-shadow: 0 4px 0 #3b0764; }
-  .v-btn-grey { background-color: #e2e8f0; color: #3b0764; box-shadow: 0 3px 0 #3b0764; font-size: 12px;}
 </style>
 
 <script>
-  let vStream = null;
-  let vCounter = 1;
-  const vImagesStore = [];
+    let stream = null;
+    let counter = 1;
+    let photos = [];
 
-  async function bukaVKamera() {
-    const video = document.getElementById('v-video');
-    const overlay = document.getElementById('v-overlay-text');
-    
-    try {
-      vStream = await navigator.mediaDevices.getUserMedia({ 
-        // Meminta resolusi kamera standar
-        video: { width: 640, height: 480, facingMode: "user" }, 
-        audio: false 
-      });
-      
-      video.srcObject = vStream;
-      overlay.style.display = 'none';
-      
-      document.getElementById('btn-v-start').style.display = 'none';
-      const snapBtn = document.getElementById('btn-v-snap');
-      snapBtn.style.display = 'block';
-      snapBtn.innerText = `JEPRET FOTO ${vCounter}/3 ⚡`;
-    } catch (err) {
-      alert("Akses kamera gagal, tolong izinkan di browser ya! 😭");
+    async function startKamera() {
+        const video = document.getElementById('pb-video');
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: { width: 500, height: 500 }, audio: false });
+            video.srcObject = stream;
+            document.getElementById('pb-hint').style.display = 'none';
+            document.getElementById('btn-start').style.display = 'none';
+            document.getElementById('btn-snap').style.display = 'block';
+            document.getElementById('btn-snap').innerText = `JEPRET FOTO 1/3 ⚡`;
+        } catch (e) { alert("Akses kamera ditolak atau tidak tersedia!"); }
     }
-  }
 
-  function jepretVFoto() {
-    if (vCounter > 3) return;
+    function ambilFoto() {
+        if (counter > 3) return;
 
-    const video = document.getElementById('v-video');
-    const canvas = document.getElementById(`v-canvas-${vCounter}`);
-    const ctx = canvas.getContext('2d');
+        const video = document.getElementById('pb-video');
+        const canvas = document.getElementById(`c${counter}`);
+        const ctx = canvas.getContext('2d');
 
-    // --- LOGIC ANTI-LONJONG: CANVAS DIBUAT KOTAK SEMPURNA ---
-    canvas.width = 400; // Ukuran resolusi internal foto (Kotak)
-    canvas.height = 400;
+        canvas.width = 500;
+        canvas.height = 500;
 
-    // --- LOGIC POTONG GAMBAR KAMERA LEBAR JADI KOTAK DI TENGAH ---
-    // Video aslinya lebar (misal 640x480), kita mau ambil 480x480 di tengah.
-    
-    // 1. Tentukan ukuran video input asli
-    let videoW = video.videoWidth;
-    let videoH = video.videoHeight;
-    
-    // 2. Tentukan ukuran kotak potong terkecil (sesuai tinggi video)
-    let cropSize = videoH; 
-    
-    // 3. Tentukan koordinat X mulai motong di video agar di tengah
-    let startX = (videoW - videoH) / 2;
+        // Proses Anti Mirror pada hasil simpanan
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+        
+        // Ambil potongan tengah video biar ga lonjong
+        const size = Math.min(video.videoWidth, video.videoHeight);
+        const startX = (video.videoWidth - size) / 2;
+        const startY = (video.videoHeight - size) / 2;
 
-    // --- LOGIC ANTI-MIRROR PAS DISIMPAN ---
-    ctx.translate(canvas.width, 0);
-    ctx.scale(-1, 1); // Balik sumbu horizontal
-    
-    // Gambar potongan video (KOTAK) ke canvas (KOTAK)
-    ctx.drawImage(
-      video,       // Sumber: Video
-      startX, 0,    // Sumber: Koordinat potong mulai X, Y
-      cropSize, cropSize, // Sumber: Ukuran potong lebar, tinggi (Kotak)
-      0, 0,        // Canvas: Koordinat gambar mulai X, Y
-      canvas.width, canvas.height // Canvas: Ukuran gambar lebar, tinggi (Kotak)
-    );
-    
-    // Reset transformasi kembali normal
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.drawImage(video, startX, startY, size, size, 0, 0, canvas.width, canvas.height);
+        
+        photos.push(canvas.toDataURL('image/png'));
+        counter++;
 
-    // Simpan data base64 foto
-    vImagesStore.push(canvas.toDataURL('image/png'));
-    vCounter++;
-
-    if (vCounter <= 3) {
-      document.getElementById('btn-v-snap').innerText = `JEPRET FOTO ${vCounter}/3 ⚡`;
-    } else {
-      // Selesai jepret 3 kali, matikan kamera
-      if (vStream) {
-        vStream.getTracks().forEach(track => track.stop());
-      }
-      video.srcObject = null;
-      document.getElementById('btn-v-snap').style.display = 'none';
-      document.getElementById('btn-v-save').style.display = 'block';
-      document.getElementById('btn-v-reset').style.display = 'block';
-    }
-  }
-
-  function unduhVStrip() {
-    const finalCanvas = document.getElementById('v-final-hidden-canvas');
-    const ctx = finalCanvas.getContext('2d');
-
-    // Canvas panjang memanjang vertikal
-    finalCanvas.width = 360;
-    finalCanvas.height = 1450; 
-
-    // Background ungu tua Cozee Corner
-    ctx.fillStyle = "#3b0764";
-    ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
-
-    // Judul Header foto
-    ctx.fillStyle = "#fef08a";
-    ctx.font = "bold 24px 'Fredoka', sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText("COZEE CORNER", finalCanvas.width / 2, 60);
-
-    ctx.fillStyle = "#ffe4e6";
-    ctx.font = "italic 15px 'Fredoka', sans-serif";
-    ctx.fillText("sip, bite & relax", finalCanvas.width / 2, 90);
-
-    let imagesLoaded = 0;
-    const imgs = [];
-
-    for (let i = 0; i < 3; i++) {
-      const img = new Image();
-      img.src = vImagesStore[i];
-      imgs.push(img);
-
-      img.onload = function() {
-        imagesLoaded++;
-        if (imagesLoaded === 3) {
-          let currentY = 130;
-          
-          imgs.forEach((loadedImg) => {
-            // Gambar Frame Putih Kotak Polaroid Strip
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(30, currentY, 300, 400); 
-            
-            // Gambar foto Kotak (No-Mirror) lurus ga lonjong
-            ctx.drawImage(loadedImg, 40, currentY + 10, 280, 280);
-            
-            currentY += 410; // Turun ke kotak berikutnya
-          });
-
-          // Teks Footer Nama Geng
-          ctx.fillStyle = "#ffe4e6";
-          ctx.font = "bold 11px 'Fredoka', sans-serif";
-          ctx.fillText("mahmud • yuni • dyon • anjelina • lutfi • pradhita", finalCanvas.width / 2, finalCanvas.height - 40);
-
-          // Jalankan download file otomatis
-          const dl = document.createElement('a');
-          dl.download = 'cozee-photostrip- square.png';
-          dl.href = finalCanvas.toDataURL('image/png');
-          dl.click();
+        if (counter <= 3) {
+            document.getElementById('btn-snap').innerText = `JEPRET FOTO ${counter}/3 ⚡`;
+        } else {
+            document.getElementById('btn-snap').style.display = 'none';
+            document.getElementById('btn-save').style.display = 'block';
+            document.getElementById('btn-reset').style.display = 'block';
+            if (stream) {
+                stream.getTracks().forEach(t => t.stop());
+            }
         }
-      };
     }
-  }
 
-  function resetVApp() {
-    vCounter = 1;
-    vImagesStore.length = 0;
-    document.getElementById('btn-v-save').style.display = 'none';
-    document.getElementById('btn-v-reset').style.display = 'none';
-    document.getElementById('btn-v-start').style.display = 'block';
-    document.getElementById('v-overlay-text').style.display = 'block';
+    function downloadStrip() {
+        const final = document.getElementById('final-canvas');
+        const ctx = final.getContext('2d');
 
-    for (let i = 1; i <= 3; i++) {
-      const canvas = document.getElementById(`v-canvas-${i}`);
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+        final.width = 400;
+        final.height = 1450;
+
+        // Background Strip Mengikuti Request (Biru Pastel)
+        ctx.fillStyle = "#bae6fd";
+        ctx.fillRect(0, 0, final.width, final.height);
+
+        // Border luar keliling strip foto hasil download
+        ctx.strokeStyle = "#0284c7";
+        ctx.lineWidth = 10;
+        ctx.strokeRect(0, 0, final.width, final.height);
+
+        // Header Teks Hasil Download (Cozee Corner)
+        ctx.fillStyle = "#0369a1";
+        ctx.font = "bold 28px 'Fredoka', sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("COZEE CORNER", 200, 65);
+        
+        ctx.fillStyle = "#e11d48";
+        ctx.font = "italic bold 15px 'Fredoka', sans-serif";
+        ctx.fillText("sip, bite & relax", 200, 95);
+
+        let y = 130;
+        let loaded = 0;
+        photos.forEach((p, i) => {
+            const img = new Image();
+            img.src = p;
+            img.onload = () => {
+                // Background Polaroid frame putih per foto
+                ctx.fillStyle = "white";
+                ctx.fillRect(35, y, 330, 390); 
+                
+                // Gambar foto lurus
+                ctx.drawImage(img, 45, y+10, 310, 310);
+                
+                // Border tipis biru buat per frame foto biar makin pop-out
+                ctx.strokeStyle = "#0284c7";
+                ctx.lineWidth = 3;
+                ctx.strokeRect(35, y, 330, 390);
+
+                y += 415;
+                loaded++;
+                
+                if (loaded === 3) {
+                    // Teks Footer hasil download (bukan nama geng)
+                    ctx.fillStyle = "#0369a1";
+                    ctx.font = "bold 11px 'Fredoka', sans-serif";
+                    ctx.fillText("✨ captured at cozee corner ✨", 200, final.height - 35);
+
+                    const link = document.createElement('a');
+                    link.download = 'cozee-corner-photostrip.png';
+                    link.href = final.toDataURL();
+                    link.click();
+                }
+            }
+        });
     }
-  }
+
+    function resetApp() {
+        location.reload();
+    }
 </script>
