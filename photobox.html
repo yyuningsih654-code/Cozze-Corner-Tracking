@@ -6,50 +6,55 @@
       <span class="v-brand-slogan">sip, bite & relax</span>
     </div>
 
-    <div class="vertical-camera-monitor">
+    <div class="vertical-camera-monitor blue-monitor">
+      <span class="monitor-icon top-left">☕</span>
+      <span class="monitor-icon top-right">🍰</span>
+      
       <video id="v-video" autoplay playsinline></video>
-      <div id="v-overlay-text" class="v-blink">SAY CHEESE! KAMERA BELUM AKTIF</div>
+      <div id="v-overlay-text" class="v-blink">TAP PLAY! WAJAH GA AKAN LONJONG</div>
+      
+      <div class="monitor-slogan">sip • bite • relax</div>
     </div>
 
     <div class="cozee-real-photostrip">
       
-      <div class="strip-inner-title">
+      <div class="strip-header-title">
         <h3>Cozee Corner</h3>
         <p>sip, bite & relax</p>
       </div>
 
       <div class="v-frame v-color-pink">
-        <div class="v-slot-inside">
+        <div class="v-slot-inside square-slot">
           <canvas id="v-canvas-1"></canvas>
           <span class="v-number">01</span>
         </div>
       </div>
 
       <div class="v-frame v-color-orange">
-        <div class="v-slot-inside">
+        <div class="v-slot-inside square-slot">
           <canvas id="v-canvas-2"></canvas>
           <span class="v-number">02</span>
         </div>
       </div>
 
       <div class="v-frame v-color-green">
-        <div class="v-slot-inside">
+        <div class="v-slot-inside square-slot">
           <canvas id="v-canvas-3"></canvas>
           <span class="v-number">03</span>
         </div>
       </div>
 
       <div class="v-strip-footer">
-        <p>mahmud • yuni • dyon • anjelina • lutfi • pradhita</p>
+        <p></p>
       </div>
 
     </div>
 
     <div class="v-action-area">
       <button id="btn-v-start" class="v-bubble-btn v-btn-blue" onclick="bukaVKamera()">BUKA KAMERA 🎥</button>
-      <button id="btn-v-snap" class="v-bubble-btn v-btn-red" onclick="jepretVFoto()" style="display: none;">JEPRET FOTO (0/3) ⚡</button>
-      <button id="btn-v-save" class="v-bubble-btn v-btn-yellow" onclick="unduhVStrip()" style="display: none;">SIMPAN STRIP FOTO 💾</button>
-      <button id="btn-v-reset" class="v-bubble-btn v-btn-grey" onclick="resetVApp()" style="display: none;">ULANGI FOTO 🔄</button>
+      <button id="btn-v-snap" class="v-bubble-btn v-btn-red" onclick="jepretVFoto()" style="display: none;">JEPRET (0/3) ⚡</button>
+      <button id="btn-v-save" class="v-bubble-btn v-btn-yellow" onclick="unduhVStrip()" style="display: none;">SIMPAN FOTO 💾</button>
+      <button id="btn-v-reset" class="v-bubble-btn v-btn-grey" onclick="resetVApp()" style="display: none;">ULANGI 🔄</button>
     </div>
 
   </div>
@@ -60,7 +65,7 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&display=swap');
 
-  /* Background Biru Langit Gradasi cerah seperti web kamu */
+  /* Background Biru Langit Gradasi Web */
   .cozee-vertical-section {
     width: 100%;
     min-height: 100vh;
@@ -68,20 +73,20 @@
     font-family: 'Fredoka', sans-serif;
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding: 20px 12px;
+    align-items: flex-start;
+    padding: 20px 10px;
     box-sizing: border-box;
   }
 
-  /* Kotak Container Utama Web */
+  /* Kotak Container Utama (Matching Border/Radius) */
   .cozee-vertical-container {
     background-color: #ffffff;
     border: 4px solid #3b0764;
     border-radius: 32px;
-    padding: 20px;
+    padding: 15px;
     width: 100%;
-    max-width: 380px; /* Lebar pas untuk HP dan bentuk strip */
-    box-shadow: 0 12px 0px rgba(59, 7, 100, 0.2);
+    max-width: 360px;
+    box-shadow: 0 10px 0px rgba(59, 7, 100, 0.15);
     box-sizing: border-box;
   }
 
@@ -89,45 +94,76 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
+    padding: 0 5px;
   }
 
   .v-brand-badge {
     background: #ffffff;
     color: #3b0764;
     border: 3px solid #3b0764;
-    padding: 6px 14px;
+    padding: 5px 12px;
     border-radius: 20px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
-    box-shadow: 0 4px 0 #3b0764;
+    box-shadow: 0 3px 0 #3b0764;
   }
 
   .v-brand-slogan {
-    font-size: 11px;
+    font-size: 10px;
     color: #3b0764;
     font-style: italic;
     font-weight: 700;
   }
 
-  /* Monitor Jendela Kamera Live */
-  .vertical-camera-monitor {
+  /* --- JENDELA KAMERA (BLUE THEME + KOTAK 1:1) --- */
+  .blue-monitor {
     width: 100%;
-    height: 200px;
-    background-color: #1e1b4b;
-    border: 4px solid #3b0764;
-    border-radius: 24px;
+    padding-top: 100%; /* MEMAKSA JADI KOTAK SEMPURNA */
     position: relative;
-    overflow: hidden;
+    background-color: #bae6fd; /* Biru bingkai tema */
+    border: 4px solid #3b0764;
+    border-radius: 20px;
     margin-bottom: 15px;
-    box-shadow: 0 5px 0 rgba(59, 7, 100, 0.15);
+    overflow: hidden;
+    box-shadow: 0 5px 0 rgba(59, 7, 100, 0.1);
   }
 
   #v-video {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    transform: scaleX(-1); /* Efek kaca cermin pas ngaca live */
+    object-fit: cover; /* CSS Ajaib Potong Wajah Lonjong */
+    transform: scaleX(-1); /* Efek kaca cermin live */
+    border: 3px solid #3b0764; /* Border video di dalam bingkai biru */
+    box-sizing: border-box;
+    border-radius: 12px;
+  }
+
+  /* Elemen Tema di Pojok Layar */
+  .monitor-icon {
+    position: absolute;
+    font-size: 20px;
+    z-index: 10;
+    filter: drop-shadow(0 2px 0 rgba(59,7,100,0.5));
+  }
+  .top-left { top: 8px; left: 8px; }
+  .top-right { top: 8px; right: 8px; }
+
+  /* Slogan di Bawah Layar Preview */
+  .monitor-slogan {
+    position: absolute;
+    bottom: 5px;
+    width: 100%;
+    text-align: center;
+    color: #3b0764;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: lowercase;
+    letter-spacing: 0.5px;
+    z-index: 10;
   }
 
   .v-blink {
@@ -137,131 +173,123 @@
     transform: translate(-50%, -50%);
     color: #fef08a;
     font-size: 12px;
-    text-align: center;
     font-weight: 700;
+    z-index: 10;
+    text-shadow: 0 2px 0 #3b0764;
   }
 
-  /* TAMPILAN 3 STRIP FOTO MEMANJANG KE BAWAH (VERTIKAL) */
+  /* --- TAMPILAN 3 STRIP KOTAK KE BAWAH --- */
   .cozee-real-photostrip {
     background-color: #ffffff;
     border: 4px solid #3b0764;
-    border-radius: 24px;
-    padding: 15px;
+    border-radius: 20px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-bottom: 18px;
+    gap: 10px;
+    margin-bottom: 15px;
     box-shadow: 0 6px 0 rgba(59, 7, 100, 0.1);
   }
 
-  .strip-inner-title {
-    text-align: center;
-    margin-bottom: 2px;
-  }
-
-  .strip-inner-title h3 {
+  .strip-header-title h3 {
     margin: 0;
     color: #3b0764;
-    font-size: 18px;
+    font-size: 16px;
+    text-align: center;
   }
 
-  .strip-inner-title p {
-    margin: 2px 0 0 0;
+  .strip-header-title p {
+    margin: 1px 0 3px 0;
     color: #fb7185;
-    font-size: 11px;
-    font-style: italic;
+    font-size: 10px;
+    text-align: center;
     font-weight: 700;
   }
 
   .v-frame {
     border: 3px solid #3b0764;
-    border-radius: 16px;
-    padding: 6px 6px 14px 6px;
+    border-radius: 12px;
+    padding: 5px 5px 12px 5px;
     box-shadow: 0 4px 0 #3b0764;
   }
 
-  /* Custom warna pastel per-kotak menu kamu */
   .v-color-pink { background-color: #fbcfe8; }
   .v-color-orange { background-color: #fed7aa; }
   .v-color-green { background-color: #bbf7d0; }
 
-  .v-slot-inside {
+  /* --- SLOT FOTO (SQUARE / KOTAK SEMPURNA 1:1) --- */
+  .square-slot {
     width: 100%;
-    height: 140px; /* Tinggi kotak potret */
+    padding-top: 100%; /* MEMAKSA JADI KOTAK SEMPURNA */
+    position: relative;
     background: #ffffff;
     border: 2px solid #3b0764;
-    border-radius: 10px;
-    position: relative;
+    border-radius: 8px;
     overflow: hidden;
   }
 
-  .v-slot-inside canvas {
+  .square-slot canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
   }
 
   .v-number {
     position: absolute;
-    top: 4px;
-    left: 6px;
-    font-size: 11px;
+    top: 3px;
+    left: 4px;
+    font-size: 10px;
     color: #3b0764;
     font-weight: 700;
     opacity: 0.3;
   }
 
-  .v-caption {
-    font-size: 10px;
-    text-align: center;
-    color: #3b0764;
-    font-weight: 700;
-    margin-top: 6px;
-  }
-
   .v-strip-footer {
     text-align: center;
-    margin-top: 4px;
+    margin-top: 2px;
     border-top: 2px dashed #fbcfe8;
-    padding-top: 8px;
+    padding-top: 6px;
   }
 
   .v-strip-footer p {
     margin: 0;
-    font-size: 10px;
+    font-size: 9px;
     color: #3b0764;
     opacity: 0.6;
     font-weight: 700;
+    letter-spacing: 0.2px;
   }
 
-  /* Area Tombol Aksi */
+  /* Area Tombol Aksi (Matching Buttons) */
   .v-action-area {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
   }
 
   .v-bubble-btn {
     width: 100%;
     border: 3px solid #3b0764;
-    padding: 12px;
+    padding: 10px;
     font-family: 'Fredoka', sans-serif;
     font-weight: 700;
-    font-size: 15px;
-    border-radius: 20px;
+    font-size: 14px;
+    border-radius: 16px;
     cursor: pointer;
     transition: transform 0.05s ease;
   }
 
   .v-bubble-btn:active {
-    transform: translateY(4px);
+    transform: translateY(3px);
     box-shadow: 0 0px 0 #3b0764 !important;
   }
 
-  .v-btn-blue { background-color: #bae6fd; color: #3b0764; box-shadow: 0 5px 0 #3b0764; }
-  .v-btn-red { background-color: #f43f5e; color: white; box-shadow: 0 5px 0 #3b0764; } /* Tombol Putar Sekarang */
-  .v-btn-yellow { background-color: #fef08a; color: #3b0764; box-shadow: 0 5px 0 #3b0764; } /* Tombol Pesan Menu */
-  .v-btn-grey { background-color: #e2e8f0; color: #3b0764; box-shadow: 0 4px 0 #3b0764; }
+  .v-btn-blue { background-color: #bae6fd; color: #3b0764; box-shadow: 0 4px 0 #3b0764; }
+  .v-btn-red { background-color: #f43f5e; color: white; box-shadow: 0 4px 0 #3b0764; }
+  .v-btn-yellow { background-color: #fef08a; color: #3b0764; box-shadow: 0 4px 0 #3b0764; }
+  .v-btn-grey { background-color: #e2e8f0; color: #3b0764; box-shadow: 0 3px 0 #3b0764; font-size: 12px;}
 </style>
 
 <script>
@@ -275,7 +303,8 @@
     
     try {
       vStream = await navigator.mediaDevices.getUserMedia({ 
-        video: { width: 400, height: 500, facingMode: "user" }, 
+        // Meminta resolusi kamera standar
+        video: { width: 640, height: 480, facingMode: "user" }, 
         audio: false 
       });
       
@@ -287,7 +316,7 @@
       snapBtn.style.display = 'block';
       snapBtn.innerText = `JEPRET FOTO ${vCounter}/3 ⚡`;
     } catch (err) {
-      alert("Akses kamera bermasalah, tolong izinkan akses kamera ya kak! 😭");
+      alert("Akses kamera gagal, tolong izinkan di browser ya! 😭");
     }
   }
 
@@ -298,21 +327,47 @@
     const canvas = document.getElementById(`v-canvas-${vCounter}`);
     const ctx = canvas.getContext('2d');
 
-    canvas.width = 300;
-    canvas.height = 360;
+    // --- LOGIC ANTI-LONJONG: CANVAS DIBUAT KOTAK SEMPURNA ---
+    canvas.width = 400; // Ukuran resolusi internal foto (Kotak)
+    canvas.height = 400;
+
+    // --- LOGIC POTONG GAMBAR KAMERA LEBAR JADI KOTAK DI TENGAH ---
+    // Video aslinya lebar (misal 640x480), kita mau ambil 480x480 di tengah.
+    
+    // 1. Tentukan ukuran video input asli
+    let videoW = video.videoWidth;
+    let videoH = video.videoHeight;
+    
+    // 2. Tentukan ukuran kotak potong terkecil (sesuai tinggi video)
+    let cropSize = videoH; 
+    
+    // 3. Tentukan koordinat X mulai motong di video agar di tengah
+    let startX = (videoW - videoH) / 2;
 
     // --- LOGIC ANTI-MIRROR PAS DISIMPAN ---
     ctx.translate(canvas.width, 0);
-    ctx.scale(-1, 1);
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    ctx.scale(-1, 1); // Balik sumbu horizontal
+    
+    // Gambar potongan video (KOTAK) ke canvas (KOTAK)
+    ctx.drawImage(
+      video,       // Sumber: Video
+      startX, 0,    // Sumber: Koordinat potong mulai X, Y
+      cropSize, cropSize, // Sumber: Ukuran potong lebar, tinggi (Kotak)
+      0, 0,        // Canvas: Koordinat gambar mulai X, Y
+      canvas.width, canvas.height // Canvas: Ukuran gambar lebar, tinggi (Kotak)
+    );
+    
+    // Reset transformasi kembali normal
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
+    // Simpan data base64 foto
     vImagesStore.push(canvas.toDataURL('image/png'));
     vCounter++;
 
     if (vCounter <= 3) {
       document.getElementById('btn-v-snap').innerText = `JEPRET FOTO ${vCounter}/3 ⚡`;
     } else {
+      // Selesai jepret 3 kali, matikan kamera
       if (vStream) {
         vStream.getTracks().forEach(track => track.stop());
       }
@@ -329,7 +384,7 @@
 
     // Canvas panjang memanjang vertikal
     finalCanvas.width = 360;
-    finalCanvas.height = 1350;
+    finalCanvas.height = 1450; 
 
     // Background ungu tua Cozee Corner
     ctx.fillStyle = "#3b0764";
@@ -359,13 +414,14 @@
           let currentY = 130;
           
           imgs.forEach((loadedImg) => {
-            // Frame putih polaroid
+            // Gambar Frame Putih Kotak Polaroid Strip
             ctx.fillStyle = "#ffffff";
-            ctx.fillRect(25, currentY, 310, 360);
+            ctx.fillRect(30, currentY, 300, 400); 
             
-            // Cetak foto asli lurus (No-Mirror)
-            ctx.drawImage(loadedImg, 35, currentY + 10, 290, 310);
-            currentY += 380; // Turun ke bawah
+            // Gambar foto Kotak (No-Mirror) lurus ga lonjong
+            ctx.drawImage(loadedImg, 40, currentY + 10, 280, 280);
+            
+            currentY += 410; // Turun ke kotak berikutnya
           });
 
           // Teks Footer Nama Geng
@@ -373,9 +429,9 @@
           ctx.font = "bold 11px 'Fredoka', sans-serif";
           ctx.fillText("mahmud • yuni • dyon • anjelina • lutfi • pradhita", finalCanvas.width / 2, finalCanvas.height - 40);
 
-          // Unduh file hasil rakitan
+          // Jalankan download file otomatis
           const dl = document.createElement('a');
-          dl.download = 'cozee-photostrip-vertikal.png';
+          dl.download = 'cozee-photostrip- square.png';
           dl.href = finalCanvas.toDataURL('image/png');
           dl.click();
         }
